@@ -1,0 +1,190 @@
+
+2.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         00000090  00000000  00000000  00000054  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000000  00800060  00800060  000000e4  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .comment      00000030  00000000  00000000  000000e4  2**0
+                  CONTENTS, READONLY
+  3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000114  2**2
+                  CONTENTS, READONLY
+  4 .debug_aranges 00000020  00000000  00000000  00000150  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_info   0000052f  00000000  00000000  00000170  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_abbrev 000004b3  00000000  00000000  0000069f  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_line   00000228  00000000  00000000  00000b52  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_frame  00000024  00000000  00000000  00000d7c  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_str    000002a8  00000000  00000000  00000da0  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_loc    00000170  00000000  00000000  00001048  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_ranges 00000010  00000000  00000000  000011b8  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	12 c0       	rjmp	.+36     	; 0x26 <__ctors_end>
+   2:	19 c0       	rjmp	.+50     	; 0x36 <__bad_interrupt>
+   4:	18 c0       	rjmp	.+48     	; 0x36 <__bad_interrupt>
+   6:	17 c0       	rjmp	.+46     	; 0x36 <__bad_interrupt>
+   8:	16 c0       	rjmp	.+44     	; 0x36 <__bad_interrupt>
+   a:	15 c0       	rjmp	.+42     	; 0x36 <__bad_interrupt>
+   c:	14 c0       	rjmp	.+40     	; 0x36 <__bad_interrupt>
+   e:	13 c0       	rjmp	.+38     	; 0x36 <__bad_interrupt>
+  10:	12 c0       	rjmp	.+36     	; 0x36 <__bad_interrupt>
+  12:	11 c0       	rjmp	.+34     	; 0x36 <__bad_interrupt>
+  14:	10 c0       	rjmp	.+32     	; 0x36 <__bad_interrupt>
+  16:	0f c0       	rjmp	.+30     	; 0x36 <__bad_interrupt>
+  18:	0e c0       	rjmp	.+28     	; 0x36 <__bad_interrupt>
+  1a:	0d c0       	rjmp	.+26     	; 0x36 <__bad_interrupt>
+  1c:	0c c0       	rjmp	.+24     	; 0x36 <__bad_interrupt>
+  1e:	0b c0       	rjmp	.+22     	; 0x36 <__bad_interrupt>
+  20:	0a c0       	rjmp	.+20     	; 0x36 <__bad_interrupt>
+  22:	09 c0       	rjmp	.+18     	; 0x36 <__bad_interrupt>
+  24:	08 c0       	rjmp	.+16     	; 0x36 <__bad_interrupt>
+
+00000026 <__ctors_end>:
+  26:	11 24       	eor	r1, r1
+  28:	1f be       	out	0x3f, r1	; 63
+  2a:	cf e5       	ldi	r28, 0x5F	; 95
+  2c:	d4 e0       	ldi	r29, 0x04	; 4
+  2e:	de bf       	out	0x3e, r29	; 62
+  30:	cd bf       	out	0x3d, r28	; 61
+  32:	02 d0       	rcall	.+4      	; 0x38 <main>
+  34:	2b c0       	rjmp	.+86     	; 0x8c <_exit>
+
+00000036 <__bad_interrupt>:
+  36:	e4 cf       	rjmp	.-56     	; 0x0 <__vectors>
+
+00000038 <main>:
+
+int main(void)
+{
+    /* Replace with your application code */
+	int i,j;
+	DDRB |= (1<<DDRB1)|(1<<DDRB2)|(1<<DDRB3);
+  38:	87 b3       	in	r24, 0x17	; 23
+  3a:	8e 60       	ori	r24, 0x0E	; 14
+  3c:	87 bb       	out	0x17, r24	; 23
+    while (1) 
+    {
+		PORTB = (1<<PORTB1);//only red on
+  3e:	62 e0       	ldi	r22, 0x02	; 2
+		for(i=0;i<100;i++)
+		for(j=0;j<1000;j++);
+		PORTB = (1<<PORTB2);//only green on
+  40:	54 e0       	ldi	r21, 0x04	; 4
+		for(i=0;i<100;i++)
+		for(j=0;j<1000;j++);
+		PORTB = (1<<PORTB3);//only blue on
+  42:	48 e0       	ldi	r20, 0x08	; 8
+    /* Replace with your application code */
+	int i,j;
+	DDRB |= (1<<DDRB1)|(1<<DDRB2)|(1<<DDRB3);
+    while (1) 
+    {
+		PORTB = (1<<PORTB1);//only red on
+  44:	68 bb       	out	0x18, r22	; 24
+  46:	24 e6       	ldi	r18, 0x64	; 100
+  48:	30 e0       	ldi	r19, 0x00	; 0
+  4a:	05 c0       	rjmp	.+10     	; 0x56 <__SREG__+0x17>
+  4c:	01 97       	sbiw	r24, 0x01	; 1
+		for(i=0;i<100;i++)
+		for(j=0;j<1000;j++);
+  4e:	f1 f7       	brne	.-4      	; 0x4c <__SREG__+0xd>
+  50:	21 50       	subi	r18, 0x01	; 1
+  52:	31 09       	sbc	r19, r1
+	int i,j;
+	DDRB |= (1<<DDRB1)|(1<<DDRB2)|(1<<DDRB3);
+    while (1) 
+    {
+		PORTB = (1<<PORTB1);//only red on
+		for(i=0;i<100;i++)
+  54:	19 f0       	breq	.+6      	; 0x5c <__SREG__+0x1d>
+
+#include <avr/io.h>
+
+
+int main(void)
+{
+  56:	88 ee       	ldi	r24, 0xE8	; 232
+  58:	93 e0       	ldi	r25, 0x03	; 3
+  5a:	f8 cf       	rjmp	.-16     	; 0x4c <__SREG__+0xd>
+    while (1) 
+    {
+		PORTB = (1<<PORTB1);//only red on
+		for(i=0;i<100;i++)
+		for(j=0;j<1000;j++);
+		PORTB = (1<<PORTB2);//only green on
+  5c:	58 bb       	out	0x18, r21	; 24
+  5e:	24 e6       	ldi	r18, 0x64	; 100
+  60:	30 e0       	ldi	r19, 0x00	; 0
+  62:	05 c0       	rjmp	.+10     	; 0x6e <__SREG__+0x2f>
+  64:	01 97       	sbiw	r24, 0x01	; 1
+		for(i=0;i<100;i++)
+		for(j=0;j<1000;j++);
+  66:	f1 f7       	brne	.-4      	; 0x64 <__SREG__+0x25>
+  68:	21 50       	subi	r18, 0x01	; 1
+  6a:	31 09       	sbc	r19, r1
+    {
+		PORTB = (1<<PORTB1);//only red on
+		for(i=0;i<100;i++)
+		for(j=0;j<1000;j++);
+		PORTB = (1<<PORTB2);//only green on
+		for(i=0;i<100;i++)
+  6c:	19 f0       	breq	.+6      	; 0x74 <__SREG__+0x35>
+    /* Replace with your application code */
+	int i,j;
+	DDRB |= (1<<DDRB1)|(1<<DDRB2)|(1<<DDRB3);
+    while (1) 
+    {
+		PORTB = (1<<PORTB1);//only red on
+  6e:	88 ee       	ldi	r24, 0xE8	; 232
+  70:	93 e0       	ldi	r25, 0x03	; 3
+  72:	f8 cf       	rjmp	.-16     	; 0x64 <__SREG__+0x25>
+		for(i=0;i<100;i++)
+		for(j=0;j<1000;j++);
+		PORTB = (1<<PORTB2);//only green on
+		for(i=0;i<100;i++)
+		for(j=0;j<1000;j++);
+		PORTB = (1<<PORTB3);//only blue on
+  74:	48 bb       	out	0x18, r20	; 24
+  76:	24 e6       	ldi	r18, 0x64	; 100
+  78:	30 e0       	ldi	r19, 0x00	; 0
+  7a:	05 c0       	rjmp	.+10     	; 0x86 <__SREG__+0x47>
+  7c:	01 97       	sbiw	r24, 0x01	; 1
+		for(i=0;i<100;i++)
+		for(j=0;j<1000;j++);
+  7e:	f1 f7       	brne	.-4      	; 0x7c <__SREG__+0x3d>
+  80:	21 50       	subi	r18, 0x01	; 1
+  82:	31 09       	sbc	r19, r1
+		for(j=0;j<1000;j++);
+		PORTB = (1<<PORTB2);//only green on
+		for(i=0;i<100;i++)
+		for(j=0;j<1000;j++);
+		PORTB = (1<<PORTB3);//only blue on
+		for(i=0;i<100;i++)
+  84:	f9 f2       	breq	.-66     	; 0x44 <__SREG__+0x5>
+    while (1) 
+    {
+		PORTB = (1<<PORTB1);//only red on
+		for(i=0;i<100;i++)
+		for(j=0;j<1000;j++);
+		PORTB = (1<<PORTB2);//only green on
+  86:	88 ee       	ldi	r24, 0xE8	; 232
+  88:	93 e0       	ldi	r25, 0x03	; 3
+  8a:	f8 cf       	rjmp	.-16     	; 0x7c <__SREG__+0x3d>
+
+0000008c <_exit>:
+  8c:	f8 94       	cli
+
+0000008e <__stop_program>:
+  8e:	ff cf       	rjmp	.-2      	; 0x8e <__stop_program>

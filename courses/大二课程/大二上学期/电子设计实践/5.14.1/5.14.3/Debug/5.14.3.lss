@@ -1,0 +1,343 @@
+
+5.14.3.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         0000020a  00000000  00000000  00000074  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000004  00800060  0000020a  0000027e  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .comment      00000030  00000000  00000000  00000282  2**0
+                  CONTENTS, READONLY
+  3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  000002b4  2**2
+                  CONTENTS, READONLY
+  4 .debug_aranges 000000a8  00000000  00000000  000002f0  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_info   00000dae  00000000  00000000  00000398  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_abbrev 000006e7  00000000  00000000  00001146  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_line   000005fb  00000000  00000000  0000182d  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_frame  000001a0  00000000  00000000  00001e28  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_str    00000453  00000000  00000000  00001fc8  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_loc    00000809  00000000  00000000  0000241b  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_ranges 00000098  00000000  00000000  00002c24  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	12 c0       	rjmp	.+36     	; 0x26 <__ctors_end>
+   2:	25 c0       	rjmp	.+74     	; 0x4e <__vector_1>
+   4:	3b c0       	rjmp	.+118    	; 0x7c <__vector_2>
+   6:	22 c0       	rjmp	.+68     	; 0x4c <__bad_interrupt>
+   8:	21 c0       	rjmp	.+66     	; 0x4c <__bad_interrupt>
+   a:	20 c0       	rjmp	.+64     	; 0x4c <__bad_interrupt>
+   c:	1f c0       	rjmp	.+62     	; 0x4c <__bad_interrupt>
+   e:	1e c0       	rjmp	.+60     	; 0x4c <__bad_interrupt>
+  10:	1d c0       	rjmp	.+58     	; 0x4c <__bad_interrupt>
+  12:	1c c0       	rjmp	.+56     	; 0x4c <__bad_interrupt>
+  14:	1b c0       	rjmp	.+54     	; 0x4c <__bad_interrupt>
+  16:	1a c0       	rjmp	.+52     	; 0x4c <__bad_interrupt>
+  18:	19 c0       	rjmp	.+50     	; 0x4c <__bad_interrupt>
+  1a:	18 c0       	rjmp	.+48     	; 0x4c <__bad_interrupt>
+  1c:	17 c0       	rjmp	.+46     	; 0x4c <__bad_interrupt>
+  1e:	16 c0       	rjmp	.+44     	; 0x4c <__bad_interrupt>
+  20:	15 c0       	rjmp	.+42     	; 0x4c <__bad_interrupt>
+  22:	14 c0       	rjmp	.+40     	; 0x4c <__bad_interrupt>
+  24:	13 c0       	rjmp	.+38     	; 0x4c <__bad_interrupt>
+
+00000026 <__ctors_end>:
+  26:	11 24       	eor	r1, r1
+  28:	1f be       	out	0x3f, r1	; 63
+  2a:	cf e5       	ldi	r28, 0x5F	; 95
+  2c:	d4 e0       	ldi	r29, 0x04	; 4
+  2e:	de bf       	out	0x3e, r29	; 62
+  30:	cd bf       	out	0x3d, r28	; 61
+
+00000032 <__do_copy_data>:
+  32:	10 e0       	ldi	r17, 0x00	; 0
+  34:	a0 e6       	ldi	r26, 0x60	; 96
+  36:	b0 e0       	ldi	r27, 0x00	; 0
+  38:	ea e0       	ldi	r30, 0x0A	; 10
+  3a:	f2 e0       	ldi	r31, 0x02	; 2
+  3c:	02 c0       	rjmp	.+4      	; 0x42 <__SREG__+0x3>
+  3e:	05 90       	lpm	r0, Z+
+  40:	0d 92       	st	X+, r0
+  42:	a4 36       	cpi	r26, 0x64	; 100
+  44:	b1 07       	cpc	r27, r17
+  46:	d9 f7       	brne	.-10     	; 0x3e <__SP_H__>
+  48:	3e d0       	rcall	.+124    	; 0xc6 <main>
+  4a:	dd c0       	rjmp	.+442    	; 0x206 <_exit>
+
+0000004c <__bad_interrupt>:
+  4c:	d9 cf       	rjmp	.-78     	; 0x0 <__vectors>
+
+0000004e <__vector_1>:
+#include <avr/interrupt.h>
+#include "twi_lcd.h"
+unsigned char duty=50;//占空比，百分比
+unsigned int freq=30;//30~8000Hz
+ISR(INT0_vect)
+{ if(duty > 90)//百分比
+  4e:	1f 92       	push	r1
+  50:	0f 92       	push	r0
+  52:	0f b6       	in	r0, 0x3f	; 63
+  54:	0f 92       	push	r0
+  56:	11 24       	eor	r1, r1
+  58:	8f 93       	push	r24
+  5a:	80 91 62 00 	lds	r24, 0x0062	; 0x800062 <duty>
+  5e:	8b 35       	cpi	r24, 0x5B	; 91
+  60:	20 f0       	brcs	.+8      	; 0x6a <__vector_1+0x1c>
+	 duty = 10;
+  62:	8a e0       	ldi	r24, 0x0A	; 10
+  64:	80 93 62 00 	sts	0x0062, r24	; 0x800062 <duty>
+  68:	03 c0       	rjmp	.+6      	; 0x70 <__vector_1+0x22>
+	else duty +=5;
+  6a:	8b 5f       	subi	r24, 0xFB	; 251
+  6c:	80 93 62 00 	sts	0x0062, r24	; 0x800062 <duty>
+}
+  70:	8f 91       	pop	r24
+  72:	0f 90       	pop	r0
+  74:	0f be       	out	0x3f, r0	; 63
+  76:	0f 90       	pop	r0
+  78:	1f 90       	pop	r1
+  7a:	18 95       	reti
+
+0000007c <__vector_2>:
+ISR(INT1_vect)
+{ if(freq >7999) freq = 30;
+  7c:	1f 92       	push	r1
+  7e:	0f 92       	push	r0
+  80:	0f b6       	in	r0, 0x3f	; 63
+  82:	0f 92       	push	r0
+  84:	11 24       	eor	r1, r1
+  86:	2f 93       	push	r18
+  88:	8f 93       	push	r24
+  8a:	9f 93       	push	r25
+  8c:	80 91 60 00 	lds	r24, 0x0060	; 0x800060 <__DATA_REGION_ORIGIN__>
+  90:	90 91 61 00 	lds	r25, 0x0061	; 0x800061 <__DATA_REGION_ORIGIN__+0x1>
+  94:	80 34       	cpi	r24, 0x40	; 64
+  96:	2f e1       	ldi	r18, 0x1F	; 31
+  98:	92 07       	cpc	r25, r18
+  9a:	38 f0       	brcs	.+14     	; 0xaa <__vector_2+0x2e>
+  9c:	8e e1       	ldi	r24, 0x1E	; 30
+  9e:	90 e0       	ldi	r25, 0x00	; 0
+  a0:	90 93 61 00 	sts	0x0061, r25	; 0x800061 <__DATA_REGION_ORIGIN__+0x1>
+  a4:	80 93 60 00 	sts	0x0060, r24	; 0x800060 <__DATA_REGION_ORIGIN__>
+  a8:	06 c0       	rjmp	.+12     	; 0xb6 <__vector_2+0x3a>
+	else freq +=100;
+  aa:	8c 59       	subi	r24, 0x9C	; 156
+  ac:	9f 4f       	sbci	r25, 0xFF	; 255
+  ae:	90 93 61 00 	sts	0x0061, r25	; 0x800061 <__DATA_REGION_ORIGIN__+0x1>
+  b2:	80 93 60 00 	sts	0x0060, r24	; 0x800060 <__DATA_REGION_ORIGIN__>
+}
+  b6:	9f 91       	pop	r25
+  b8:	8f 91       	pop	r24
+  ba:	2f 91       	pop	r18
+  bc:	0f 90       	pop	r0
+  be:	0f be       	out	0x3f, r0	; 63
+  c0:	0f 90       	pop	r0
+  c2:	1f 90       	pop	r1
+  c4:	18 95       	reti
+
+000000c6 <main>:
+int main(void)
+{ 
+	DDRD &=~((1<<DDRD2) |(1<<DDRD3));//INT0(PD2)和INT1(PD3)分别调整占空比和频率
+  c6:	81 b3       	in	r24, 0x11	; 17
+  c8:	83 7f       	andi	r24, 0xF3	; 243
+  ca:	81 bb       	out	0x11, r24	; 17
+	PORTD |=(1<<PORTD2)|(1<<PORTD3);//开启内部上拉电阻，即PD2和PD3管脚默认为高电平
+  cc:	82 b3       	in	r24, 0x12	; 18
+  ce:	8c 60       	ori	r24, 0x0C	; 12
+  d0:	82 bb       	out	0x12, r24	; 18
+	DDRB |=(1<<DDRB1);//PB1控制蜂鸣器的IO
+  d2:	b9 9a       	sbi	0x17, 1	; 23
+	MCUCR |=(1<<ISC01)|(1<<ISC11);//INT0和INT1下降沿触发中断（执行对应的ISR）
+  d4:	85 b7       	in	r24, 0x35	; 53
+  d6:	8a 60       	ori	r24, 0x0A	; 10
+  d8:	85 bf       	out	0x35, r24	; 53
+	GICR |=(1<<INT0)|(1<<INT1);//开中断
+  da:	8b b7       	in	r24, 0x3b	; 59
+  dc:	80 6c       	ori	r24, 0xC0	; 192
+  de:	8b bf       	out	0x3b, r24	; 59
+	sei();//全局中断开
+  e0:	78 94       	sei
+	unsigned int high,low,i;
+	while (1)
+	{ high = F_CPU/freq*duty/100;//
+  e2:	0f 2e       	mov	r0, r31
+  e4:	81 2c       	mov	r8, r1
+  e6:	f2 e1       	ldi	r31, 0x12	; 18
+  e8:	9f 2e       	mov	r9, r31
+  ea:	fa e7       	ldi	r31, 0x7A	; 122
+  ec:	af 2e       	mov	r10, r31
+  ee:	b1 2c       	mov	r11, r1
+  f0:	f0 2d       	mov	r31, r0
+  f2:	0f 2e       	mov	r0, r31
+  f4:	f4 e6       	ldi	r31, 0x64	; 100
+  f6:	cf 2e       	mov	r12, r31
+  f8:	d1 2c       	mov	r13, r1
+  fa:	e1 2c       	mov	r14, r1
+  fc:	f1 2c       	mov	r15, r1
+  fe:	f0 2d       	mov	r31, r0
+ 100:	20 91 60 00 	lds	r18, 0x0060	; 0x800060 <__DATA_REGION_ORIGIN__>
+ 104:	30 91 61 00 	lds	r19, 0x0061	; 0x800061 <__DATA_REGION_ORIGIN__+0x1>
+ 108:	40 e0       	ldi	r20, 0x00	; 0
+ 10a:	50 e0       	ldi	r21, 0x00	; 0
+ 10c:	c5 01       	movw	r24, r10
+ 10e:	b4 01       	movw	r22, r8
+ 110:	42 d0       	rcall	.+132    	; 0x196 <__udivmodsi4>
+ 112:	29 01       	movw	r4, r18
+ 114:	3a 01       	movw	r6, r20
+ 116:	a0 91 62 00 	lds	r26, 0x0062	; 0x800062 <duty>
+ 11a:	b0 e0       	ldi	r27, 0x00	; 0
+ 11c:	6a d0       	rcall	.+212    	; 0x1f2 <__muluhisi3>
+ 11e:	a7 01       	movw	r20, r14
+ 120:	96 01       	movw	r18, r12
+ 122:	39 d0       	rcall	.+114    	; 0x196 <__udivmodsi4>
+		low = F_CPU/freq - high;//
+ 124:	f2 01       	movw	r30, r4
+ 126:	e2 1b       	sub	r30, r18
+ 128:	f3 0b       	sbc	r31, r19
+		if(low >1290)low-=1290;
+ 12a:	eb 30       	cpi	r30, 0x0B	; 11
+ 12c:	65 e0       	ldi	r22, 0x05	; 5
+ 12e:	f6 07       	cpc	r31, r22
+ 130:	10 f0       	brcs	.+4      	; 0x136 <main+0x70>
+ 132:	ea 50       	subi	r30, 0x0A	; 10
+ 134:	f5 40       	sbci	r31, 0x05	; 5
+		high /=12; low /=12;
+ 136:	ab ea       	ldi	r26, 0xAB	; 171
+ 138:	ba ea       	ldi	r27, 0xAA	; 170
+ 13a:	4f d0       	rcall	.+158    	; 0x1da <__umulhisi3>
+ 13c:	ac 01       	movw	r20, r24
+ 13e:	56 95       	lsr	r21
+ 140:	47 95       	ror	r20
+ 142:	56 95       	lsr	r21
+ 144:	47 95       	ror	r20
+ 146:	56 95       	lsr	r21
+ 148:	47 95       	ror	r20
+ 14a:	9f 01       	movw	r18, r30
+ 14c:	46 d0       	rcall	.+140    	; 0x1da <__umulhisi3>
+ 14e:	96 95       	lsr	r25
+ 150:	87 95       	ror	r24
+ 152:	96 95       	lsr	r25
+ 154:	87 95       	ror	r24
+ 156:	96 95       	lsr	r25
+ 158:	87 95       	ror	r24
+		PORTB |=(1<<PORTB1);for(i=0;i<high;i++) _delay_us (1);
+ 15a:	c1 9a       	sbi	0x18, 1	; 24
+ 15c:	41 15       	cp	r20, r1
+ 15e:	51 05       	cpc	r21, r1
+ 160:	59 f0       	breq	.+22     	; 0x178 <main+0xb2>
+ 162:	20 e0       	ldi	r18, 0x00	; 0
+ 164:	30 e0       	ldi	r19, 0x00	; 0
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+ 166:	62 e0       	ldi	r22, 0x02	; 2
+ 168:	6a 95       	dec	r22
+ 16a:	f1 f7       	brne	.-4      	; 0x168 <main+0xa2>
+ 16c:	00 c0       	rjmp	.+0      	; 0x16e <main+0xa8>
+ 16e:	2f 5f       	subi	r18, 0xFF	; 255
+ 170:	3f 4f       	sbci	r19, 0xFF	; 255
+ 172:	42 17       	cp	r20, r18
+ 174:	53 07       	cpc	r21, r19
+ 176:	b9 f7       	brne	.-18     	; 0x166 <main+0xa0>
+		PORTB &=~(1<<PORTB1);for(i=0;i<low;i++) _delay_us (1);
+ 178:	c1 98       	cbi	0x18, 1	; 24
+ 17a:	00 97       	sbiw	r24, 0x00	; 0
+ 17c:	09 f2       	breq	.-126    	; 0x100 <main+0x3a>
+ 17e:	20 e0       	ldi	r18, 0x00	; 0
+ 180:	30 e0       	ldi	r19, 0x00	; 0
+ 182:	42 e0       	ldi	r20, 0x02	; 2
+ 184:	4a 95       	dec	r20
+ 186:	f1 f7       	brne	.-4      	; 0x184 <main+0xbe>
+ 188:	00 c0       	rjmp	.+0      	; 0x18a <main+0xc4>
+ 18a:	2f 5f       	subi	r18, 0xFF	; 255
+ 18c:	3f 4f       	sbci	r19, 0xFF	; 255
+ 18e:	82 17       	cp	r24, r18
+ 190:	93 07       	cpc	r25, r19
+ 192:	b9 f7       	brne	.-18     	; 0x182 <main+0xbc>
+ 194:	b5 cf       	rjmp	.-150    	; 0x100 <main+0x3a>
+
+00000196 <__udivmodsi4>:
+ 196:	a1 e2       	ldi	r26, 0x21	; 33
+ 198:	1a 2e       	mov	r1, r26
+ 19a:	aa 1b       	sub	r26, r26
+ 19c:	bb 1b       	sub	r27, r27
+ 19e:	fd 01       	movw	r30, r26
+ 1a0:	0d c0       	rjmp	.+26     	; 0x1bc <__udivmodsi4_ep>
+
+000001a2 <__udivmodsi4_loop>:
+ 1a2:	aa 1f       	adc	r26, r26
+ 1a4:	bb 1f       	adc	r27, r27
+ 1a6:	ee 1f       	adc	r30, r30
+ 1a8:	ff 1f       	adc	r31, r31
+ 1aa:	a2 17       	cp	r26, r18
+ 1ac:	b3 07       	cpc	r27, r19
+ 1ae:	e4 07       	cpc	r30, r20
+ 1b0:	f5 07       	cpc	r31, r21
+ 1b2:	20 f0       	brcs	.+8      	; 0x1bc <__udivmodsi4_ep>
+ 1b4:	a2 1b       	sub	r26, r18
+ 1b6:	b3 0b       	sbc	r27, r19
+ 1b8:	e4 0b       	sbc	r30, r20
+ 1ba:	f5 0b       	sbc	r31, r21
+
+000001bc <__udivmodsi4_ep>:
+ 1bc:	66 1f       	adc	r22, r22
+ 1be:	77 1f       	adc	r23, r23
+ 1c0:	88 1f       	adc	r24, r24
+ 1c2:	99 1f       	adc	r25, r25
+ 1c4:	1a 94       	dec	r1
+ 1c6:	69 f7       	brne	.-38     	; 0x1a2 <__udivmodsi4_loop>
+ 1c8:	60 95       	com	r22
+ 1ca:	70 95       	com	r23
+ 1cc:	80 95       	com	r24
+ 1ce:	90 95       	com	r25
+ 1d0:	9b 01       	movw	r18, r22
+ 1d2:	ac 01       	movw	r20, r24
+ 1d4:	bd 01       	movw	r22, r26
+ 1d6:	cf 01       	movw	r24, r30
+ 1d8:	08 95       	ret
+
+000001da <__umulhisi3>:
+ 1da:	a2 9f       	mul	r26, r18
+ 1dc:	b0 01       	movw	r22, r0
+ 1de:	b3 9f       	mul	r27, r19
+ 1e0:	c0 01       	movw	r24, r0
+ 1e2:	a3 9f       	mul	r26, r19
+ 1e4:	01 d0       	rcall	.+2      	; 0x1e8 <__umulhisi3+0xe>
+ 1e6:	b2 9f       	mul	r27, r18
+ 1e8:	70 0d       	add	r23, r0
+ 1ea:	81 1d       	adc	r24, r1
+ 1ec:	11 24       	eor	r1, r1
+ 1ee:	91 1d       	adc	r25, r1
+ 1f0:	08 95       	ret
+
+000001f2 <__muluhisi3>:
+ 1f2:	f3 df       	rcall	.-26     	; 0x1da <__umulhisi3>
+ 1f4:	a5 9f       	mul	r26, r21
+ 1f6:	90 0d       	add	r25, r0
+ 1f8:	b4 9f       	mul	r27, r20
+ 1fa:	90 0d       	add	r25, r0
+ 1fc:	a4 9f       	mul	r26, r20
+ 1fe:	80 0d       	add	r24, r0
+ 200:	91 1d       	adc	r25, r1
+ 202:	11 24       	eor	r1, r1
+ 204:	08 95       	ret
+
+00000206 <_exit>:
+ 206:	f8 94       	cli
+
+00000208 <__stop_program>:
+ 208:	ff cf       	rjmp	.-2      	; 0x208 <__stop_program>

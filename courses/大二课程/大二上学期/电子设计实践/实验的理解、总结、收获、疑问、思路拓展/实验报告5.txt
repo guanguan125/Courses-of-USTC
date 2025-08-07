@@ -1,0 +1,214 @@
+PB22061324 张全
+实验内容：
+1：在LCD1602上显示本人姓名（拼音）和学号
+2：设计一个程序分别下载到自己和同学的MCU
+中，实现将一块板上触摸开关的开关次数，通过TWI接口
+传送到在另一块板并显示在其LCD上。满足以下之一即可：
+• 单独设计收和发程序，借用同学的电路板完成
+• 单独设计收和发程序，两个同学合作完成
+• 设计收发一体的程序，借用电路板或合作完成
+
+实验理解：
+1.
+#ifndef TWI_LCD_H_
+#define TWI_LCD_H_
+#ifndef F_CPU
+#define F_CPU 1000000UL //延时用
+#endif
+#include "twi_fun.h"
+#include <util/delay.h>
+//LCD1602 控制和显示指令
+#define LCD_CLEARDISPLAY 0x01//清屏，设置AC为DDRAM地址0
+#define LCD_RETURNHOME 0x02//设置AC为DDRAM地址0，光标回原点
+#define LCD_ENTRYMODESET 0x04//与I/D和S位定义光标移动方向和显示移位
+#define LCD_DISPLAYCONTROL 0x08//与D/C/B设置显示开关，光标开关/闪烁
+#define LCD_CURSORSHIFT 0x10//与S/C和R/L一起设置光标移动或显示移位
+#define LCD_FUNCTIONSET 0x20//与DL、N和F一起设置LCD功能:8/4位数据;1/2行显示;5*8/10点阵字符
+#define LCD_SETCGRAMADDR 0x40//设置CGRAM地址到地址计数器(AC）
+#define LCD_SETDDRAMADDR 0x80//设置DDRAM地址到地址计数器(AC）
+// LCD进入模式设置位(LCD_ENTRYMODESET=0x04)
+#define LCD_ENTRYSHIFT 0x01//S位=1，显示移位，=0不移位
+#define LCD_ENTRYINC 0x02//I/D位=1，显示左移(递增)
+//LCD显示开关控制位 (LCD_DISPLAYCONTROL=0x08)
+#defineLCD_BLINKON 0x01//B=1，闪烁
+#define LCD_CURSORON 0x02//C=1，光标
+#define LCD_DISPLAYON 0x04//D=1，显示开
+//LCD光标和显示移位控制位(LCD_CURSORSHIFT=0x10)
+#define LCD_CURSOR2LEFT 0x00//S/C=0,R/L=0:光标往左移
+#define LCD_CURSOR2RIGHT 0x04//S/C=0,R/L=1:光标往右移
+#define LCD_DC2LEFT 0x08//S/C=1,R/L=0:显示向左移，光标跟着移
+#define LCD_DC2RIGHT 0x0C//S/C=1,R/L=1:显示向右移,光标跟着移
+//LCD功能设置位(LCD_FUNCTIONSET=0x20)
+#define LCD_4BITMODE 0x00 //DL=0:4位(DB7-4)数据，需2次传输
+#define LCD_8BITMODE 0x10 //DL=1：8位(DB7-0)数据传输
+#define LCD_1LINE 0x00 //N=0，1行显示
+#define LCD_2LINE 0x08 //N=1，2行显示
+#define LCD_5X8DOTS 0x00 //F=0：5X8 dots字符
+#define LCD_5XADOTS 0x04 //F=1：5X10 dots字符，只能1行显示
+//LCD 1602 控制管脚：I2C数据的低4位（PCF8574-P0~3)
+#define LCD_RS 0x01 //PCF8574-P0控制LCD1602的RS管脚
+#define LCD_RW 0x02 //PCF8574-P1）控制LCD1602的RW管脚
+#define LCD_E 0x04 //PCF8574-P2）控制LCD1602的E管脚
+#define LCD_BACKLIGHTON 0x08 //PCF8574-P3控制LCD1602的K管脚
+#define LCD_SLAVE_ADDRESS 0x27 //从机地址PCF8574(A2-0:111)
+unsigned char TWI_Write_LCD(unsigned char uc_data)
+{ TWI_Start();//发送START信号
+	if(TWI_Get_State_Info()!=TW_START) return 0;//不成功
+	TWI_Write(LCD_SLAVE_ADDRESS<<1|TW_WRITE); //发送SLA+W
+	if(TWI_Get_State_Info()!=TW_MT_SLA_ACK)return 0;//不成功
+	TWI_Write(uc_data|LCD_BACKLIGHTON);//发送数据+背光常开
+	if(TWI_Get_State_Info()!=TW_MT_DATA_ACK)return 0;//不成功
+	TWI_Stop();
+	return 1;//成功
+}
+void LCD_4Bit_Write(unsigned char uc_data)//4位方式写PCF8574
+{ TWI_Write_LCD(uc_data);//数据送出，E=0
+	_delay_us(1);//保持
+	TWI_Write_LCD(uc_data|LCD_E);//数据送出，E=1
+	_delay_us(1);//保持
+	TWI_Write_LCD(uc_data & (~LCD_E));//数据送出，E=0
+	_delay_us(50);//等待数据传输结束
+}
+void LCD_8Bit_Write(unsigned char uc_data,unsigned char uc_mode)
+//2次4位数据传输方式写PCF9574,uc_mode:0-命令,1-数据
+{ unsigned char high4bit = uc_data & 0xf0;
+	unsigned char low4bit = (uc_data<<4)&0xf0;
+	LCD_4Bit_Write(high4bit|uc_mode);//先发送高4位
+	LCD_4Bit_Write(low4bit|uc_mode);//再发送低4位
+}
+void LCD_Init()//初始化LCD1602
+{ _delay_ms(50);//上电后至少再等40ms
+	LCD_4Bit_Write(0x30); //在默认8位接口，试着进入4位接口模式
+	_delay_us(4500);//等待至少4.5ms
+	LCD_4Bit_Write(0x30); _delay_us(4500);//等待至少4.5ms
+	LCD_4Bit_Write(0x30); _delay_us(150);//等待至少150us
+	LCD_4Bit_Write(0x20);//进入4位接口模式
+	//设置模式，显示，点数等
+	LCD_8Bit_Write(LCD_FUNCTIONSET|LCD_4BITMODE|LCD_2LINE|LCD_5X8DOTS,
+	0);
+	LCD_8Bit_Write(LCD_DISPLAYCONTROL|LCD_DISPLAYON,0);//显示
+	LCD_8Bit_Write(LCD_CLEARDISPLAY,0); _delay_us(2000);//等待
+	LCD_8Bit_Write(LCD_ENTRYMODESET|LCD_ENTRYINC,0);//显示左移(递增)
+	LCD_8Bit_Write(LCD_RETURNHOME,0);//返回原点
+	_delay_us(2000);//等待
+}
+void LCD_Set_Cursor_Location(unsigned char row,unsigned char col)
+//设置光标位置,row:0~1,col:0~39
+{ unsigned char offset[]={0x0,0x40}; LCD_8Bit_Write(LCD_SETDDRAMADDR|(col+offset[row]),0);
+}
+void LCD_Write_NewChar(char c_data)//在当前位置显示
+{ LCD_8Bit_Write(c_data,1);
+}
+void LCD_Write_Char(unsigned char row,unsigned char col,char c_data)
+//在指定位置显示
+{ LCD_Set_Cursor_Location(row,col); LCD_8Bit_Write(c_data,1);
+}
+void LCD_Write_String(unsigned char row,unsigned char col,const char *pStr)
+//在指定位置显示串
+{
+	LCD_Set_Cursor_Location(row,col);
+	while((*pStr) != '\0')
+	{
+		LCD_8Bit_Write(*pStr,1);
+		pStr ++;
+	}
+}
+#endif /* TWI_LCD_H_ */
+2.
+#define F_CPU 1000000UL
+#include <util/delay.h>
+#include <avr/io.h>
+#include <util/twi.h> //TWI接口状态码定义等
+#include <avr/interrupt.h>
+unsigned char counter=0;
+unsigned char n=0;
+ISR(INT0_vect)
+{
+	
+	if(counter <15)
+	counter++;
+	else
+	counter = 0;
+}
+int main(void)
+{ unsigned char sla_w = 0x33<<1; //从MCU地址为0x33(位0为开启广播)，写从MCU
+	DDRC &= ~((1<<DDRC5)|(1<<DDRC4));//PC5/4为输入
+	PORTC |= (1<<PORTC5)|(1<<PORTC4);//开启内部上拉
+	TWBR = 0x02;//fscl=50KHz
+	TWSR = 0x00;//无预分频
+	DDRD &= ~(1<<DDRD2);//PD2(int0) 接触摸开关的sig管脚
+	MCUCR |=((1<<ISC01)|(1<<ISC00));//int0管脚是上升沿触发中断INT0
+	GICR |= (1<<INT0);//允许INT0外部中断
+	sei(); //开启全局中断SREG(I)=1
+	while (1)
+	{ TWCR = (1<<TWINT)|(1<<TWSTA)|(1<<TWEN);//清标志，开TWI，发START
+		while(!(TWCR & (1<<TWINT)));//等待START发出
+		if((TWSR & 0xf8) == TW_START)//START已发出
+		{ TWDR=sla_w;//发送SLA+W
+			TWCR=(1<<TWINT)|(1<<TWEN);//清除标志，并发送sla+w
+			while(!(TWCR & (1<<TWINT)));//等待sla+w发出
+			if((TWSR & 0xf8)==TW_MT_SLA_ACK)//sla+W已发出
+				{ 
+					
+					TWDR=counter;//发送开关次数
+					TWCR=(1<<TWINT)|(1<<TWEN);//清除标志，并发送数据
+					while(!(TWCR & (1<<TWINT)));//等待数据发出
+					if((TWSR & 0xf8)==TW_MT_DATA_ACK)//数据已发出
+					TWCR=(1<<TWINT)|(1<<TWEN)|(1<<TWSTO);//清标志，发STOP
+					
+				}
+				
+			
+		}
+			TWCR=(1<<TWINT);//清除标志位，禁止TWI
+			_delay_ms(500);
+		} //while结束
+	} //main函数结束
+3.
+#include <avr/io.h>#include <util/
+twi.h> //TWI接口状态码定义等
+#include "twi_lcd.h"
+int main(void)
+{
+	unsigned char counter=0;
+	unsigned char sla_addr = 0x33<<1;//从机地址为0x33(最低位为开启广播)
+	unsigned char chs[4];
+	unsigned char d_t=0;
+	unsigned int i=0;
+	TWCR=0x0;//禁止TWI接口
+	DDRC &=~((1<<DDRC5)|(1<<DDRC4));//PC5/4输入
+	PORTC |=(1<<PORTC5)|(1<<PORTC4);//SCL/SDA内部上拉
+	TWBR = 0x02;//fscl=50KHz
+	TWSR = 0x00;//无预分频
+	TWAR = sla_addr;//设置从机地址
+	TWI_Init();
+	LCD_Init();
+	while (1)
+	{ TWCR = (1<<TWINT)|(1<<TWEA)|(1<<TWEN);//清标志，开TWI，自动应答
+		
+		while(!(TWCR & (1<<TWINT)));//等待接收sla+w
+		
+		if((TWSR & 0xf8)==TW_SR_SLA_ACK)//sla+W已收到，已发ACK
+		{ TWCR = (1<<TWINT)|(1<<TWEA)|(1<<TWEN);//清除标志，开启ACK
+			while(!(TWCR & (1<<TWINT)));//等待接收数据
+			if((TWSR & 0xf8)==TW_SR_DATA_ACK)//数据已收到，已发ACK
+			{ counter = TWDR; //收到的数据存储在counter里
+				TWCR = (1<<TWINT)|(1<<TWEA)|(1<<TWEN);//
+			}
+		}
+		TWCR = (1<<TWINT);//清除TWINT标志，关闭TWI接口
+		d_t = counter;
+		for(i=0;i<4;i++)//1个整数转换为4位字符
+		{
+			chs[3-i]=d_t%10+0x30;
+			d_t=d_t/10;
+		}
+		LCD_Write_String(0,2,"Touchpad Times:");
+		LCD_Write_String(1,8,chs); //在LCD上显示数据(仅低4位)
+		
+	} //while结束
+} //main函数结束
+
+实验心得：
+1.在第一个实验中，我们需要掌握如何添加头文件，注意结合老师的视频，而在使用main函数前我们应该应用自制的头文件，且不用<>，而使用""包含文件名，修改要显示的字符串分别改为自己的名字与学号，注意连线正确
+2.在第二个实验中，我们要学会举一反三，PPT给出的是数码管，而我们需要据此实验LCD的功能，我们需要删除一些有关数码管的代码，并且新增chs数组来实现按键次数的显示，而且我们在两个MCU的连接时要注意导线的连接正确，因为第一个MCU按键次数传输较快导致第二个MCU接收卡顿，我们需要在发送程序中添加延时处理，经测验，延时500ms即可大致达到效果，别忘记引用包含延时的头文件。

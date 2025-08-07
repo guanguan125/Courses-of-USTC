@@ -1,0 +1,525 @@
+
+5.14.1.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000002fe  00000000  00000000  00000094  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000016  00800060  000002fe  00000392  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .bss          00000002  00800076  00800076  000003a8  2**0
+                  ALLOC
+  3 .comment      00000030  00000000  00000000  000003a8  2**0
+                  CONTENTS, READONLY
+  4 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  000003d8  2**2
+                  CONTENTS, READONLY
+  5 .debug_aranges 000000a0  00000000  00000000  00000414  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_info   00000e78  00000000  00000000  000004b4  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_abbrev 000006db  00000000  00000000  0000132c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_line   00000684  00000000  00000000  00001a07  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_frame  00000184  00000000  00000000  0000208c  2**2
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_str    00000454  00000000  00000000  00002210  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_loc    00000682  00000000  00000000  00002664  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 12 .debug_ranges 00000090  00000000  00000000  00002ce6  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	12 c0       	rjmp	.+36     	; 0x26 <__ctors_end>
+   2:	2c c0       	rjmp	.+88     	; 0x5c <__bad_interrupt>
+   4:	2b c0       	rjmp	.+86     	; 0x5c <__bad_interrupt>
+   6:	2a c0       	rjmp	.+84     	; 0x5c <__bad_interrupt>
+   8:	29 c0       	rjmp	.+82     	; 0x5c <__bad_interrupt>
+   a:	28 c0       	rjmp	.+80     	; 0x5c <__bad_interrupt>
+   c:	27 c0       	rjmp	.+78     	; 0x5c <__bad_interrupt>
+   e:	26 c0       	rjmp	.+76     	; 0x5c <__bad_interrupt>
+  10:	25 c0       	rjmp	.+74     	; 0x5c <__bad_interrupt>
+  12:	02 c1       	rjmp	.+516    	; 0x218 <__vector_9>
+  14:	23 c0       	rjmp	.+70     	; 0x5c <__bad_interrupt>
+  16:	22 c0       	rjmp	.+68     	; 0x5c <__bad_interrupt>
+  18:	21 c0       	rjmp	.+66     	; 0x5c <__bad_interrupt>
+  1a:	20 c0       	rjmp	.+64     	; 0x5c <__bad_interrupt>
+  1c:	1f c0       	rjmp	.+62     	; 0x5c <__bad_interrupt>
+  1e:	1e c0       	rjmp	.+60     	; 0x5c <__bad_interrupt>
+  20:	1d c0       	rjmp	.+58     	; 0x5c <__bad_interrupt>
+  22:	1c c0       	rjmp	.+56     	; 0x5c <__bad_interrupt>
+  24:	1b c0       	rjmp	.+54     	; 0x5c <__bad_interrupt>
+
+00000026 <__ctors_end>:
+  26:	11 24       	eor	r1, r1
+  28:	1f be       	out	0x3f, r1	; 63
+  2a:	cf e5       	ldi	r28, 0x5F	; 95
+  2c:	d4 e0       	ldi	r29, 0x04	; 4
+  2e:	de bf       	out	0x3e, r29	; 62
+  30:	cd bf       	out	0x3d, r28	; 61
+
+00000032 <__do_copy_data>:
+  32:	10 e0       	ldi	r17, 0x00	; 0
+  34:	a0 e6       	ldi	r26, 0x60	; 96
+  36:	b0 e0       	ldi	r27, 0x00	; 0
+  38:	ee ef       	ldi	r30, 0xFE	; 254
+  3a:	f2 e0       	ldi	r31, 0x02	; 2
+  3c:	02 c0       	rjmp	.+4      	; 0x42 <__SREG__+0x3>
+  3e:	05 90       	lpm	r0, Z+
+  40:	0d 92       	st	X+, r0
+  42:	a6 37       	cpi	r26, 0x76	; 118
+  44:	b1 07       	cpc	r27, r17
+  46:	d9 f7       	brne	.-10     	; 0x3e <__SP_H__>
+
+00000048 <__do_clear_bss>:
+  48:	20 e0       	ldi	r18, 0x00	; 0
+  4a:	a6 e7       	ldi	r26, 0x76	; 118
+  4c:	b0 e0       	ldi	r27, 0x00	; 0
+  4e:	01 c0       	rjmp	.+2      	; 0x52 <.do_clear_bss_start>
+
+00000050 <.do_clear_bss_loop>:
+  50:	1d 92       	st	X+, r1
+
+00000052 <.do_clear_bss_start>:
+  52:	a8 37       	cpi	r26, 0x78	; 120
+  54:	b2 07       	cpc	r27, r18
+  56:	e1 f7       	brne	.-8      	; 0x50 <.do_clear_bss_loop>
+  58:	ae d0       	rcall	.+348    	; 0x1b6 <main>
+  5a:	4f c1       	rjmp	.+670    	; 0x2fa <_exit>
+
+0000005c <__bad_interrupt>:
+  5c:	d1 cf       	rjmp	.-94     	; 0x0 <__vectors>
+
+0000005e <TWI_Init>:
+	while((*pStr) != '\0')
+	{
+		LCD_8Bit_Write(*pStr,1);
+		pStr ++;
+	}
+}
+  5e:	11 b8       	out	0x01, r1	; 1
+  60:	82 e0       	ldi	r24, 0x02	; 2
+  62:	80 b9       	out	0x00, r24	; 0
+  64:	84 e0       	ldi	r24, 0x04	; 4
+  66:	86 bf       	out	0x36, r24	; 54
+  68:	08 95       	ret
+
+0000006a <TWI_Start>:
+  6a:	84 ea       	ldi	r24, 0xA4	; 164
+  6c:	86 bf       	out	0x36, r24	; 54
+  6e:	06 b6       	in	r0, 0x36	; 54
+  70:	07 fe       	sbrs	r0, 7
+  72:	fd cf       	rjmp	.-6      	; 0x6e <TWI_Start+0x4>
+  74:	08 95       	ret
+
+00000076 <TWI_Write>:
+  76:	83 b9       	out	0x03, r24	; 3
+  78:	84 e8       	ldi	r24, 0x84	; 132
+  7a:	86 bf       	out	0x36, r24	; 54
+  7c:	06 b6       	in	r0, 0x36	; 54
+  7e:	07 fe       	sbrs	r0, 7
+  80:	fd cf       	rjmp	.-6      	; 0x7c <TWI_Write+0x6>
+  82:	08 95       	ret
+
+00000084 <TWI_Write_LCD>:
+  84:	cf 93       	push	r28
+  86:	c8 2f       	mov	r28, r24
+  88:	f0 df       	rcall	.-32     	; 0x6a <TWI_Start>
+  8a:	81 b1       	in	r24, 0x01	; 1
+  8c:	88 7f       	andi	r24, 0xF8	; 248
+  8e:	88 30       	cpi	r24, 0x08	; 8
+  90:	89 f4       	brne	.+34     	; 0xb4 <TWI_Write_LCD+0x30>
+  92:	8e e4       	ldi	r24, 0x4E	; 78
+  94:	f0 df       	rcall	.-32     	; 0x76 <TWI_Write>
+  96:	81 b1       	in	r24, 0x01	; 1
+  98:	88 7f       	andi	r24, 0xF8	; 248
+  9a:	88 31       	cpi	r24, 0x18	; 24
+  9c:	69 f4       	brne	.+26     	; 0xb8 <TWI_Write_LCD+0x34>
+  9e:	8c 2f       	mov	r24, r28
+  a0:	88 60       	ori	r24, 0x08	; 8
+  a2:	e9 df       	rcall	.-46     	; 0x76 <TWI_Write>
+  a4:	81 b1       	in	r24, 0x01	; 1
+  a6:	88 7f       	andi	r24, 0xF8	; 248
+  a8:	88 32       	cpi	r24, 0x28	; 40
+  aa:	41 f4       	brne	.+16     	; 0xbc <TWI_Write_LCD+0x38>
+  ac:	84 e9       	ldi	r24, 0x94	; 148
+  ae:	86 bf       	out	0x36, r24	; 54
+  b0:	81 e0       	ldi	r24, 0x01	; 1
+  b2:	05 c0       	rjmp	.+10     	; 0xbe <TWI_Write_LCD+0x3a>
+  b4:	80 e0       	ldi	r24, 0x00	; 0
+  b6:	03 c0       	rjmp	.+6      	; 0xbe <TWI_Write_LCD+0x3a>
+  b8:	80 e0       	ldi	r24, 0x00	; 0
+  ba:	01 c0       	rjmp	.+2      	; 0xbe <TWI_Write_LCD+0x3a>
+  bc:	80 e0       	ldi	r24, 0x00	; 0
+  be:	cf 91       	pop	r28
+  c0:	08 95       	ret
+
+000000c2 <LCD_4Bit_Write>:
+  c2:	cf 93       	push	r28
+  c4:	c8 2f       	mov	r28, r24
+  c6:	de df       	rcall	.-68     	; 0x84 <TWI_Write_LCD>
+  c8:	00 00       	nop
+  ca:	8c 2f       	mov	r24, r28
+  cc:	84 60       	ori	r24, 0x04	; 4
+  ce:	da df       	rcall	.-76     	; 0x84 <TWI_Write_LCD>
+  d0:	00 00       	nop
+  d2:	8c 2f       	mov	r24, r28
+  d4:	8b 7f       	andi	r24, 0xFB	; 251
+  d6:	d6 df       	rcall	.-84     	; 0x84 <TWI_Write_LCD>
+  d8:	80 e1       	ldi	r24, 0x10	; 16
+  da:	8a 95       	dec	r24
+  dc:	f1 f7       	brne	.-4      	; 0xda <LCD_4Bit_Write+0x18>
+  de:	00 c0       	rjmp	.+0      	; 0xe0 <LCD_4Bit_Write+0x1e>
+  e0:	cf 91       	pop	r28
+  e2:	08 95       	ret
+
+000000e4 <LCD_8Bit_Write>:
+  e4:	cf 93       	push	r28
+  e6:	df 93       	push	r29
+  e8:	c8 2f       	mov	r28, r24
+  ea:	d6 2f       	mov	r29, r22
+  ec:	80 7f       	andi	r24, 0xF0	; 240
+  ee:	86 2b       	or	r24, r22
+  f0:	e8 df       	rcall	.-48     	; 0xc2 <LCD_4Bit_Write>
+  f2:	20 e1       	ldi	r18, 0x10	; 16
+  f4:	c2 9f       	mul	r28, r18
+  f6:	c0 01       	movw	r24, r0
+  f8:	11 24       	eor	r1, r1
+  fa:	8d 2b       	or	r24, r29
+  fc:	e2 df       	rcall	.-60     	; 0xc2 <LCD_4Bit_Write>
+  fe:	df 91       	pop	r29
+ 100:	cf 91       	pop	r28
+ 102:	08 95       	ret
+
+00000104 <LCD_Init>:
+ 104:	83 ed       	ldi	r24, 0xD3	; 211
+ 106:	90 e3       	ldi	r25, 0x30	; 48
+ 108:	01 97       	sbiw	r24, 0x01	; 1
+ 10a:	f1 f7       	brne	.-4      	; 0x108 <LCD_Init+0x4>
+ 10c:	00 c0       	rjmp	.+0      	; 0x10e <LCD_Init+0xa>
+ 10e:	00 00       	nop
+ 110:	80 e3       	ldi	r24, 0x30	; 48
+ 112:	d7 df       	rcall	.-82     	; 0xc2 <LCD_4Bit_Write>
+ 114:	84 e6       	ldi	r24, 0x64	; 100
+ 116:	94 e0       	ldi	r25, 0x04	; 4
+ 118:	01 97       	sbiw	r24, 0x01	; 1
+ 11a:	f1 f7       	brne	.-4      	; 0x118 <LCD_Init+0x14>
+ 11c:	00 c0       	rjmp	.+0      	; 0x11e <LCD_Init+0x1a>
+ 11e:	00 00       	nop
+ 120:	80 e3       	ldi	r24, 0x30	; 48
+ 122:	cf df       	rcall	.-98     	; 0xc2 <LCD_4Bit_Write>
+ 124:	84 e6       	ldi	r24, 0x64	; 100
+ 126:	94 e0       	ldi	r25, 0x04	; 4
+ 128:	01 97       	sbiw	r24, 0x01	; 1
+ 12a:	f1 f7       	brne	.-4      	; 0x128 <LCD_Init+0x24>
+ 12c:	00 c0       	rjmp	.+0      	; 0x12e <LCD_Init+0x2a>
+ 12e:	00 00       	nop
+ 130:	80 e3       	ldi	r24, 0x30	; 48
+ 132:	c7 df       	rcall	.-114    	; 0xc2 <LCD_4Bit_Write>
+ 134:	92 e3       	ldi	r25, 0x32	; 50
+ 136:	9a 95       	dec	r25
+ 138:	f1 f7       	brne	.-4      	; 0x136 <LCD_Init+0x32>
+ 13a:	80 e2       	ldi	r24, 0x20	; 32
+ 13c:	c2 df       	rcall	.-124    	; 0xc2 <LCD_4Bit_Write>
+ 13e:	60 e0       	ldi	r22, 0x00	; 0
+ 140:	88 e2       	ldi	r24, 0x28	; 40
+ 142:	d0 df       	rcall	.-96     	; 0xe4 <LCD_8Bit_Write>
+ 144:	60 e0       	ldi	r22, 0x00	; 0
+ 146:	8c e0       	ldi	r24, 0x0C	; 12
+ 148:	cd df       	rcall	.-102    	; 0xe4 <LCD_8Bit_Write>
+ 14a:	60 e0       	ldi	r22, 0x00	; 0
+ 14c:	81 e0       	ldi	r24, 0x01	; 1
+ 14e:	ca df       	rcall	.-108    	; 0xe4 <LCD_8Bit_Write>
+ 150:	83 ef       	ldi	r24, 0xF3	; 243
+ 152:	91 e0       	ldi	r25, 0x01	; 1
+ 154:	01 97       	sbiw	r24, 0x01	; 1
+ 156:	f1 f7       	brne	.-4      	; 0x154 <LCD_Init+0x50>
+ 158:	00 c0       	rjmp	.+0      	; 0x15a <LCD_Init+0x56>
+ 15a:	00 00       	nop
+ 15c:	60 e0       	ldi	r22, 0x00	; 0
+ 15e:	86 e0       	ldi	r24, 0x06	; 6
+ 160:	c1 df       	rcall	.-126    	; 0xe4 <LCD_8Bit_Write>
+ 162:	60 e0       	ldi	r22, 0x00	; 0
+ 164:	82 e0       	ldi	r24, 0x02	; 2
+ 166:	be df       	rcall	.-132    	; 0xe4 <LCD_8Bit_Write>
+ 168:	83 ef       	ldi	r24, 0xF3	; 243
+ 16a:	91 e0       	ldi	r25, 0x01	; 1
+ 16c:	01 97       	sbiw	r24, 0x01	; 1
+ 16e:	f1 f7       	brne	.-4      	; 0x16c <LCD_Init+0x68>
+ 170:	00 c0       	rjmp	.+0      	; 0x172 <LCD_Init+0x6e>
+ 172:	00 00       	nop
+ 174:	08 95       	ret
+
+00000176 <LCD_Set_Cursor_Location>:
+ 176:	cf 93       	push	r28
+ 178:	df 93       	push	r29
+ 17a:	00 d0       	rcall	.+0      	; 0x17c <LCD_Set_Cursor_Location+0x6>
+ 17c:	cd b7       	in	r28, 0x3d	; 61
+ 17e:	de b7       	in	r29, 0x3e	; 62
+ 180:	19 82       	std	Y+1, r1	; 0x01
+ 182:	90 e4       	ldi	r25, 0x40	; 64
+ 184:	9a 83       	std	Y+2, r25	; 0x02
+ 186:	fe 01       	movw	r30, r28
+ 188:	e8 0f       	add	r30, r24
+ 18a:	f1 1d       	adc	r31, r1
+ 18c:	81 81       	ldd	r24, Z+1	; 0x01
+ 18e:	86 0f       	add	r24, r22
+ 190:	60 e0       	ldi	r22, 0x00	; 0
+ 192:	80 68       	ori	r24, 0x80	; 128
+ 194:	a7 df       	rcall	.-178    	; 0xe4 <LCD_8Bit_Write>
+ 196:	0f 90       	pop	r0
+ 198:	0f 90       	pop	r0
+ 19a:	df 91       	pop	r29
+ 19c:	cf 91       	pop	r28
+ 19e:	08 95       	ret
+
+000001a0 <LCD_Write_NewChar>:
+ 1a0:	61 e0       	ldi	r22, 0x01	; 1
+ 1a2:	a0 df       	rcall	.-192    	; 0xe4 <LCD_8Bit_Write>
+ 1a4:	08 95       	ret
+
+000001a6 <LCD_Write_Char>:
+ 1a6:	cf 93       	push	r28
+ 1a8:	c4 2f       	mov	r28, r20
+ 1aa:	e5 df       	rcall	.-54     	; 0x176 <LCD_Set_Cursor_Location>
+ 1ac:	61 e0       	ldi	r22, 0x01	; 1
+ 1ae:	8c 2f       	mov	r24, r28
+ 1b0:	99 df       	rcall	.-206    	; 0xe4 <LCD_8Bit_Write>
+ 1b2:	cf 91       	pop	r28
+ 1b4:	08 95       	ret
+
+000001b6 <main>:
+#include "twi_lcd.h"
+#include <avr/interrupt.h>
+unsigned char hexStr[17]={'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','-'};
+unsigned char key_no[5]={16,16,16,16,0};//存放4位连续按下的编码,以’\0'结束
+unsigned char getkey,keyno;//取按键阵列扫描输入，按下按键的编码
+int main(void) { DDRD = (0xf0);//PD7~4为输出S_R0~3，PD3~0为输入S_C0~3
+ 1b6:	80 ef       	ldi	r24, 0xF0	; 240
+ 1b8:	81 bb       	out	0x11, r24	; 17
+	PORTD = (0xff);//PD7~4输出高电平,PD3~0的内部上拉电阻启用
+ 1ba:	8f ef       	ldi	r24, 0xFF	; 255
+ 1bc:	82 bb       	out	0x12, r24	; 18
+	TCCR0 = (1<<CS02)|(1<<CS00);//1024分频
+ 1be:	85 e0       	ldi	r24, 0x05	; 5
+ 1c0:	83 bf       	out	0x33, r24	; 51
+	TCNT0 = 102;//从102开始计数，1MHz/1024/154约为150ms中断一次
+ 1c2:	86 e6       	ldi	r24, 0x66	; 102
+ 1c4:	82 bf       	out	0x32, r24	; 50
+	TIMSK |=(1<<TOIE0);//允许TOV0中断
+ 1c6:	89 b7       	in	r24, 0x39	; 57
+ 1c8:	81 60       	ori	r24, 0x01	; 1
+ 1ca:	89 bf       	out	0x39, r24	; 57
+	TWI_Init(); LCD_Init();
+ 1cc:	48 df       	rcall	.-368    	; 0x5e <TWI_Init>
+ 1ce:	9a df       	rcall	.-204    	; 0x104 <LCD_Init>
+	sei();//全局中断开
+ 1d0:	78 94       	sei
+	while (1) 
+	{ LCD_Write_Char(0,1,hexStr[key_no[3]]);
+ 1d2:	c0 e6       	ldi	r28, 0x60	; 96
+ 1d4:	d0 e0       	ldi	r29, 0x00	; 0
+ 1d6:	eb 81       	ldd	r30, Y+3	; 0x03
+ 1d8:	f0 e0       	ldi	r31, 0x00	; 0
+ 1da:	eb 59       	subi	r30, 0x9B	; 155
+ 1dc:	ff 4f       	sbci	r31, 0xFF	; 255
+ 1de:	40 81       	ld	r20, Z
+ 1e0:	61 e0       	ldi	r22, 0x01	; 1
+ 1e2:	80 e0       	ldi	r24, 0x00	; 0
+ 1e4:	e0 df       	rcall	.-64     	; 0x1a6 <LCD_Write_Char>
+		LCD_Write_NewChar(hexStr[key_no[2]]);
+ 1e6:	ea 81       	ldd	r30, Y+2	; 0x02
+ 1e8:	f0 e0       	ldi	r31, 0x00	; 0
+ 1ea:	eb 59       	subi	r30, 0x9B	; 155
+ 1ec:	ff 4f       	sbci	r31, 0xFF	; 255
+ 1ee:	80 81       	ld	r24, Z
+ 1f0:	d7 df       	rcall	.-82     	; 0x1a0 <LCD_Write_NewChar>
+		LCD_Write_NewChar(hexStr[key_no[1]]);
+ 1f2:	e9 81       	ldd	r30, Y+1	; 0x01
+ 1f4:	f0 e0       	ldi	r31, 0x00	; 0
+ 1f6:	eb 59       	subi	r30, 0x9B	; 155
+ 1f8:	ff 4f       	sbci	r31, 0xFF	; 255
+ 1fa:	80 81       	ld	r24, Z
+ 1fc:	d1 df       	rcall	.-94     	; 0x1a0 <LCD_Write_NewChar>
+		LCD_Write_NewChar(hexStr[key_no[0]]);
+ 1fe:	e8 81       	ld	r30, Y
+ 200:	f0 e0       	ldi	r31, 0x00	; 0
+ 202:	eb 59       	subi	r30, 0x9B	; 155
+ 204:	ff 4f       	sbci	r31, 0xFF	; 255
+ 206:	80 81       	ld	r24, Z
+ 208:	cb df       	rcall	.-106    	; 0x1a0 <LCD_Write_NewChar>
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+ 20a:	87 e8       	ldi	r24, 0x87	; 135
+ 20c:	93 e1       	ldi	r25, 0x13	; 19
+ 20e:	01 97       	sbiw	r24, 0x01	; 1
+ 210:	f1 f7       	brne	.-4      	; 0x20e <main+0x58>
+ 212:	00 c0       	rjmp	.+0      	; 0x214 <main+0x5e>
+ 214:	00 00       	nop
+ 216:	df cf       	rjmp	.-66     	; 0x1d6 <main+0x20>
+
+00000218 <__vector_9>:
+		_delay_ms(20); 
+	}
+}
+		ISR(TIMER0_OVF_vect)//溢出中断TCNT0=255溢出到102
+		{ TCNT0 = 102;//从102开始计数，1MHz/1024/154约为150ms中断一次
+ 218:	1f 92       	push	r1
+ 21a:	0f 92       	push	r0
+ 21c:	0f b6       	in	r0, 0x3f	; 63
+ 21e:	0f 92       	push	r0
+ 220:	11 24       	eor	r1, r1
+ 222:	8f 93       	push	r24
+ 224:	9f 93       	push	r25
+ 226:	ef 93       	push	r30
+ 228:	ff 93       	push	r31
+ 22a:	86 e6       	ldi	r24, 0x66	; 102
+ 22c:	82 bf       	out	0x32, r24	; 50
+			keyno = 16;//默认无按键按下
+ 22e:	80 e1       	ldi	r24, 0x10	; 16
+ 230:	80 93 76 00 	sts	0x0076, r24	; 0x800076 <__data_end>
+			//1.扫描第1行
+			PORTD = ~(1<<PORTD7);//PORTD7为0,其它为1，送给第1行
+ 234:	8f e7       	ldi	r24, 0x7F	; 127
+ 236:	82 bb       	out	0x12, r24	; 18
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+ 238:	00 c0       	rjmp	.+0      	; 0x23a <__vector_9+0x22>
+			_delay_us(2);
+			getkey = (PIND & 0x0f);//取按键阵列的列状态
+ 23a:	80 b3       	in	r24, 0x10	; 16
+ 23c:	8f 70       	andi	r24, 0x0F	; 15
+ 23e:	80 93 77 00 	sts	0x0077, r24	; 0x800077 <getkey>
+			switch(getkey) { case 0x07:keyno = 0;break;//1行1列编码为0/1 //S4
+ 242:	8b 30       	cpi	r24, 0x0B	; 11
+ 244:	61 f0       	breq	.+24     	; 0x25e <__vector_9+0x46>
+ 246:	18 f4       	brcc	.+6      	; 0x24e <__vector_9+0x36>
+ 248:	87 30       	cpi	r24, 0x07	; 7
+ 24a:	31 f0       	breq	.+12     	; 0x258 <__vector_9+0x40>
+ 24c:	13 c0       	rjmp	.+38     	; 0x274 <__vector_9+0x5c>
+ 24e:	8d 30       	cpi	r24, 0x0D	; 13
+ 250:	51 f0       	breq	.+20     	; 0x266 <__vector_9+0x4e>
+ 252:	8e 30       	cpi	r24, 0x0E	; 14
+ 254:	61 f0       	breq	.+24     	; 0x26e <__vector_9+0x56>
+ 256:	0e c0       	rjmp	.+28     	; 0x274 <__vector_9+0x5c>
+ 258:	10 92 76 00 	sts	0x0076, r1	; 0x800076 <__data_end>
+ 25c:	0b c0       	rjmp	.+22     	; 0x274 <__vector_9+0x5c>
+				case 0x0b:keyno = 1;break;//1行2列编码为1/2 //S8
+ 25e:	81 e0       	ldi	r24, 0x01	; 1
+ 260:	80 93 76 00 	sts	0x0076, r24	; 0x800076 <__data_end>
+ 264:	07 c0       	rjmp	.+14     	; 0x274 <__vector_9+0x5c>
+				case 0x0d:keyno = 2;break;//1行3列编码为2/3 //S12
+ 266:	82 e0       	ldi	r24, 0x02	; 2
+ 268:	80 93 76 00 	sts	0x0076, r24	; 0x800076 <__data_end>
+ 26c:	03 c0       	rjmp	.+6      	; 0x274 <__vector_9+0x5c>
+			case 0x0e:keyno = 3;break;//1行4列编码为3/A //S16
+ 26e:	83 e0       	ldi	r24, 0x03	; 3
+ 270:	80 93 76 00 	sts	0x0076, r24	; 0x800076 <__data_end>
+			 }
+			//2.扫描第2行
+			PORTD = ~(1<<PORTD6);//PORTD6为0,其它为1，送给第2行
+ 274:	8f eb       	ldi	r24, 0xBF	; 191
+ 276:	82 bb       	out	0x12, r24	; 18
+ 278:	00 c0       	rjmp	.+0      	; 0x27a <__vector_9+0x62>
+			_delay_us(2);
+			getkey = (PIND & 0x0f);//取按键阵列的列状态
+ 27a:	80 b3       	in	r24, 0x10	; 16
+ 27c:	8f 70       	andi	r24, 0x0F	; 15
+ 27e:	80 93 77 00 	sts	0x0077, r24	; 0x800077 <getkey>
+			//3.扫描第3行
+			//4.扫描第4行
+			PORTD = ~(1<<PORTD4);//PORTD4为0，其它为1，送给第4行
+ 282:	8f ee       	ldi	r24, 0xEF	; 239
+ 284:	82 bb       	out	0x12, r24	; 18
+ 286:	00 c0       	rjmp	.+0      	; 0x288 <__vector_9+0x70>
+			_delay_us(2); getkey = (PIND & 0x0f);//取按键阵列的列状态
+ 288:	80 b3       	in	r24, 0x10	; 16
+ 28a:	8f 70       	andi	r24, 0x0F	; 15
+ 28c:	80 93 77 00 	sts	0x0077, r24	; 0x800077 <getkey>
+			switch(getkey) { case 0x07:keyno =12;break;//4行1列编码为12/*
+ 290:	8b 30       	cpi	r24, 0x0B	; 11
+ 292:	69 f0       	breq	.+26     	; 0x2ae <__vector_9+0x96>
+ 294:	18 f4       	brcc	.+6      	; 0x29c <__vector_9+0x84>
+ 296:	87 30       	cpi	r24, 0x07	; 7
+ 298:	31 f0       	breq	.+12     	; 0x2a6 <__vector_9+0x8e>
+ 29a:	15 c0       	rjmp	.+42     	; 0x2c6 <__vector_9+0xae>
+ 29c:	8d 30       	cpi	r24, 0x0D	; 13
+ 29e:	59 f0       	breq	.+22     	; 0x2b6 <__vector_9+0x9e>
+ 2a0:	8e 30       	cpi	r24, 0x0E	; 14
+ 2a2:	69 f0       	breq	.+26     	; 0x2be <__vector_9+0xa6>
+ 2a4:	10 c0       	rjmp	.+32     	; 0x2c6 <__vector_9+0xae>
+ 2a6:	8c e0       	ldi	r24, 0x0C	; 12
+ 2a8:	80 93 76 00 	sts	0x0076, r24	; 0x800076 <__data_end>
+ 2ac:	1a c0       	rjmp	.+52     	; 0x2e2 <__vector_9+0xca>
+			case 0x0b:keyno =13;break;//4行2列编码为13/0
+ 2ae:	8d e0       	ldi	r24, 0x0D	; 13
+ 2b0:	80 93 76 00 	sts	0x0076, r24	; 0x800076 <__data_end>
+ 2b4:	16 c0       	rjmp	.+44     	; 0x2e2 <__vector_9+0xca>
+			case 0x0d:keyno =14;break;//4行3列编码为14/#
+ 2b6:	8e e0       	ldi	r24, 0x0E	; 14
+ 2b8:	80 93 76 00 	sts	0x0076, r24	; 0x800076 <__data_end>
+ 2bc:	12 c0       	rjmp	.+36     	; 0x2e2 <__vector_9+0xca>
+			case 0x0e:keyno =15;break;//4行4列编码为15/D
+ 2be:	8f e0       	ldi	r24, 0x0F	; 15
+ 2c0:	80 93 76 00 	sts	0x0076, r24	; 0x800076 <__data_end>
+ 2c4:	0e c0       	rjmp	.+28     	; 0x2e2 <__vector_9+0xca>
+			 }
+			/*一轮按键阵列处理结束*/
+			if(keyno<16) { key_no[3]=key_no[2]; //移动按键数据
+ 2c6:	80 91 76 00 	lds	r24, 0x0076	; 0x800076 <__data_end>
+ 2ca:	80 31       	cpi	r24, 0x10	; 16
+ 2cc:	68 f4       	brcc	.+26     	; 0x2e8 <__vector_9+0xd0>
+ 2ce:	e0 e6       	ldi	r30, 0x60	; 96
+ 2d0:	f0 e0       	ldi	r31, 0x00	; 0
+ 2d2:	92 81       	ldd	r25, Z+2	; 0x02
+ 2d4:	93 83       	std	Z+3, r25	; 0x03
+			key_no[2]=key_no[1];
+ 2d6:	91 81       	ldd	r25, Z+1	; 0x01
+ 2d8:	92 83       	std	Z+2, r25	; 0x02
+			key_no[1]=key_no[0];
+ 2da:	90 81       	ld	r25, Z
+ 2dc:	91 83       	std	Z+1, r25	; 0x01
+			key_no[0]=keyno; //新的按键数据 
+ 2de:	80 83       	st	Z, r24
+			}
+		} //ISR结束
+ 2e0:	03 c0       	rjmp	.+6      	; 0x2e8 <__vector_9+0xd0>
+			case 0x0b:keyno =13;break;//4行2列编码为13/0
+			case 0x0d:keyno =14;break;//4行3列编码为14/#
+			case 0x0e:keyno =15;break;//4行4列编码为15/D
+			 }
+			/*一轮按键阵列处理结束*/
+			if(keyno<16) { key_no[3]=key_no[2]; //移动按键数据
+ 2e2:	80 91 76 00 	lds	r24, 0x0076	; 0x800076 <__data_end>
+ 2e6:	f3 cf       	rjmp	.-26     	; 0x2ce <__vector_9+0xb6>
+			key_no[2]=key_no[1];
+			key_no[1]=key_no[0];
+			key_no[0]=keyno; //新的按键数据 
+			}
+		} //ISR结束
+ 2e8:	ff 91       	pop	r31
+ 2ea:	ef 91       	pop	r30
+ 2ec:	9f 91       	pop	r25
+ 2ee:	8f 91       	pop	r24
+ 2f0:	0f 90       	pop	r0
+ 2f2:	0f be       	out	0x3f, r0	; 63
+ 2f4:	0f 90       	pop	r0
+ 2f6:	1f 90       	pop	r1
+ 2f8:	18 95       	reti
+
+000002fa <_exit>:
+ 2fa:	f8 94       	cli
+
+000002fc <__stop_program>:
+ 2fc:	ff cf       	rjmp	.-2      	; 0x2fc <__stop_program>

@@ -1,0 +1,146 @@
+
+6.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         00000080  00000000  00000000  00000054  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000000  00800060  00800060  000000d4  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .comment      00000030  00000000  00000000  000000d4  2**0
+                  CONTENTS, READONLY
+  3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000104  2**2
+                  CONTENTS, READONLY
+  4 .debug_aranges 00000020  00000000  00000000  00000140  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_info   00000542  00000000  00000000  00000160  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_abbrev 000004b3  00000000  00000000  000006a2  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_line   00000208  00000000  00000000  00000b55  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_frame  00000024  00000000  00000000  00000d60  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_str    000002ba  00000000  00000000  00000d84  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_loc    0000008b  00000000  00000000  0000103e  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_ranges 00000010  00000000  00000000  000010c9  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	12 c0       	rjmp	.+36     	; 0x26 <__ctors_end>
+   2:	19 c0       	rjmp	.+50     	; 0x36 <__bad_interrupt>
+   4:	18 c0       	rjmp	.+48     	; 0x36 <__bad_interrupt>
+   6:	17 c0       	rjmp	.+46     	; 0x36 <__bad_interrupt>
+   8:	16 c0       	rjmp	.+44     	; 0x36 <__bad_interrupt>
+   a:	15 c0       	rjmp	.+42     	; 0x36 <__bad_interrupt>
+   c:	14 c0       	rjmp	.+40     	; 0x36 <__bad_interrupt>
+   e:	13 c0       	rjmp	.+38     	; 0x36 <__bad_interrupt>
+  10:	12 c0       	rjmp	.+36     	; 0x36 <__bad_interrupt>
+  12:	11 c0       	rjmp	.+34     	; 0x36 <__bad_interrupt>
+  14:	10 c0       	rjmp	.+32     	; 0x36 <__bad_interrupt>
+  16:	0f c0       	rjmp	.+30     	; 0x36 <__bad_interrupt>
+  18:	0e c0       	rjmp	.+28     	; 0x36 <__bad_interrupt>
+  1a:	0d c0       	rjmp	.+26     	; 0x36 <__bad_interrupt>
+  1c:	0c c0       	rjmp	.+24     	; 0x36 <__bad_interrupt>
+  1e:	0b c0       	rjmp	.+22     	; 0x36 <__bad_interrupt>
+  20:	0a c0       	rjmp	.+20     	; 0x36 <__bad_interrupt>
+  22:	09 c0       	rjmp	.+18     	; 0x36 <__bad_interrupt>
+  24:	08 c0       	rjmp	.+16     	; 0x36 <__bad_interrupt>
+
+00000026 <__ctors_end>:
+  26:	11 24       	eor	r1, r1
+  28:	1f be       	out	0x3f, r1	; 63
+  2a:	cf e5       	ldi	r28, 0x5F	; 95
+  2c:	d4 e0       	ldi	r29, 0x04	; 4
+  2e:	de bf       	out	0x3e, r29	; 62
+  30:	cd bf       	out	0x3d, r28	; 61
+  32:	02 d0       	rcall	.+4      	; 0x38 <main>
+  34:	23 c0       	rjmp	.+70     	; 0x7c <_exit>
+
+00000036 <__bad_interrupt>:
+  36:	e4 cf       	rjmp	.-56     	; 0x0 <__vectors>
+
+00000038 <main>:
+
+
+int main(void)
+{
+    unsigned char tpr1=0, tpr2=0,counter=0;
+	DDRB= (1<<DDRB2)|(1<<DDRB3)|(1<<DDRB4);
+  38:	8c e1       	ldi	r24, 0x1C	; 28
+  3a:	87 bb       	out	0x17, r24	; 23
+	DDRD &= ~(1<<DDRD6);
+  3c:	8e 98       	cbi	0x11, 6	; 17
+#include <avr/io.h>
+
+
+int main(void)
+{
+    unsigned char tpr1=0, tpr2=0,counter=0;
+  3e:	90 e0       	ldi	r25, 0x00	; 0
+  40:	20 e0       	ldi	r18, 0x00	; 0
+		tpr1 = (PIND & (1<<PIND6))>>6;
+		if(tpr2==0 && tpr1==1)counter++;
+		switch(counter)
+		{
+			case 1 : PORTB = (1<<PORTB2);break;
+			case 2 : PORTB = (1<<PORTB3);break;
+  42:	68 e0       	ldi	r22, 0x08	; 8
+			case 3 : PORTB = (1<<PORTB4);break;
+  44:	50 e1       	ldi	r21, 0x10	; 16
+		tpr2 = tpr1;
+		tpr1 = (PIND & (1<<PIND6))>>6;
+		if(tpr2==0 && tpr1==1)counter++;
+		switch(counter)
+		{
+			case 1 : PORTB = (1<<PORTB2);break;
+  46:	44 e0       	ldi	r20, 0x04	; 4
+  48:	01 c0       	rjmp	.+2      	; 0x4c <__SREG__+0xd>
+  4a:	28 2f       	mov	r18, r24
+	DDRD &= ~(1<<DDRD6);
+    /* Replace with your application code */
+    while (1) 
+    {
+		tpr2 = tpr1;
+		tpr1 = (PIND & (1<<PIND6))>>6;
+  4c:	80 b3       	in	r24, 0x10	; 16
+  4e:	86 fb       	bst	r24, 6
+  50:	88 27       	eor	r24, r24
+  52:	80 f9       	bld	r24, 0
+		if(tpr2==0 && tpr1==1)counter++;
+  54:	21 11       	cpse	r18, r1
+  56:	03 c0       	rjmp	.+6      	; 0x5e <__SREG__+0x1f>
+  58:	81 30       	cpi	r24, 0x01	; 1
+  5a:	09 f4       	brne	.+2      	; 0x5e <__SREG__+0x1f>
+  5c:	9f 5f       	subi	r25, 0xFF	; 255
+		switch(counter)
+  5e:	92 30       	cpi	r25, 0x02	; 2
+  60:	31 f0       	breq	.+12     	; 0x6e <__SREG__+0x2f>
+  62:	93 30       	cpi	r25, 0x03	; 3
+  64:	31 f0       	breq	.+12     	; 0x72 <__SREG__+0x33>
+  66:	91 30       	cpi	r25, 0x01	; 1
+  68:	31 f4       	brne	.+12     	; 0x76 <__SREG__+0x37>
+		{
+			case 1 : PORTB = (1<<PORTB2);break;
+  6a:	48 bb       	out	0x18, r20	; 24
+  6c:	ee cf       	rjmp	.-36     	; 0x4a <__SREG__+0xb>
+			case 2 : PORTB = (1<<PORTB3);break;
+  6e:	68 bb       	out	0x18, r22	; 24
+  70:	ec cf       	rjmp	.-40     	; 0x4a <__SREG__+0xb>
+			case 3 : PORTB = (1<<PORTB4);break;
+  72:	58 bb       	out	0x18, r21	; 24
+  74:	ea cf       	rjmp	.-44     	; 0x4a <__SREG__+0xb>
+			default :PORTB =0;counter = 0;
+  76:	18 ba       	out	0x18, r1	; 24
+  78:	90 e0       	ldi	r25, 0x00	; 0
+  7a:	e7 cf       	rjmp	.-50     	; 0x4a <__SREG__+0xb>
+
+0000007c <_exit>:
+  7c:	f8 94       	cli
+
+0000007e <__stop_program>:
+  7e:	ff cf       	rjmp	.-2      	; 0x7e <__stop_program>

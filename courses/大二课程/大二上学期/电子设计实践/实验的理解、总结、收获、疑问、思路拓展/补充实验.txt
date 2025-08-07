@@ -1,0 +1,482 @@
+PB22061324 张全
+补充实验内容：
+MCU的“OS”（打破常规）
+UART自测：通过TXD发送可以在LCD上显示的字符，再通过RXD接收数据并显示在LCD的第2行
+代码示意：
+相关3个头文件：
+#ifndef TWI_FUN_H_
+#define TWI_FUN_H_
+#include <util/twi.h>//软件自带TWI接口的寄存器等头文件
+void TWI_Init(void)//twi 接口的初始化
+{//设置SCL的频率：1MHz cpu-50KHz scl,2M-100K,8M-400K
+	TWSR = 0x00; //最低2位为预分频设置(00-1,01-4,10-16,11-64)
+	TWBR = 0x02; //位率设置，fscl=cpu频率/(16+2*TWBR*预分频值)
+	TWCR = (1<<TWEN); //开启TWI
+}
+void TWI_Start(void)//发送Start信号，开始本次TWI通信
+{ TWCR = (1<<TWINT)|(1<<TWSTA)|(1<<TWEN);//发送Start信号
+	while(!(TWCR &(1<<TWINT)));//等待Start信号发出
+}
+void TWI_Stop(void)//发送Stop信号，结束本次TWI通信
+{ TWCR = (1<<TWINT)|(1<<TWSTO)|(1<<TWEN);//发送Stop信号
+}
+void TWI_Write(unsigned char uc_data) //向TWI接口发送8位数据
+{
+	TWDR = uc_data;//8位数据存放在TWDR
+	TWCR = (1<<TWINT)|(1<<TWEN);//发送TWDR中的数据
+	while(!(TWCR &(1<<TWINT)));//等待数据发出
+}
+unsigned char TWI_Read_With_ACK(void)
+{
+	TWCR = (1<<TWINT)|(1<<TWEA)|(1<<TWEN);//准备接收数据，并ACK
+	while(!(TWCR &(1<<TWINT)));//等待接收数据
+	return TWDR;//返回接收到的数据
+}
+unsigned char TWI_Read_With_NACK(void)
+{
+	TWCR = (1<<TWINT)|(1<<TWEN);//准备接收数据，并NACK
+	while(!(TWCR &(1<<TWINT)));//等待接收数据
+	return TWDR;//返回接收到的数据
+}unsigned char TWI_Get_State_Info(void)
+{
+	unsigned char uc_status;
+	uc_status = TWSR & 0xf8;
+	return uc_status;
+}
+#endif /* TWI_FUN_H_ */
+
+#ifndef TWI_LCD_H_
+#define TWI_LCD_H_
+#ifndef F_CPU
+#define F_CPU 1000000UL //延时用
+#endif
+#include "twi_fun.h"
+#include <util/delay.h>
+//LCD1602 控制和显示指令
+#define LCD_CLEARDISPLAY 0x01//清屏，设置AC为DDRAM地址0
+#define LCD_RETURNHOME 0x02//设置AC为DDRAM地址0，光标回原点
+#define LCD_ENTRYMODESET 0x04//与I/D和S位定义光标移动方向和显示移位
+#define LCD_DISPLAYCONTROL 0x08//与D/C/B设置显示开关，光标开关/闪烁
+#define LCD_CURSORSHIFT 0x10//与S/C和R/L一起设置光标移动或显示移位
+#define LCD_FUNCTIONSET 0x20//与DL、N和F一起设置LCD功能:8/4位数
+//据;1/2行显示;5*8/10点阵字符
+#define LCD_SETCGRAMADDR 0x40//设置CGRAM地址到地址计数器(AC）
+#define LCD_SETDDRAMADDR 0x80//设置DDRAM地址到地址计数器(AC）
+// LCD进入模式设置位(LCD_ENTRYMODESET=0x04)
+#define LCD_ENTRYSHIFT 0x01//S位=1，显示移位，=0不移位
+#define LCD_ENTRYINC 0x02//I/D位=1，显示左移(递增)
+//LCD显示开关控制位 (LCD_DISPLAYCONTROL=0x08)
+#define LCD_BLINKON 0x01//B=1，闪烁
+#define LCD_CURSORON 0x02//C=1，光标
+#define LCD_DISPLAYON 0x04//D=1，显示开
+//LCD光标和显示移位控制位(LCD_CURSORSHIFT=0x10)
+#define LCD_CURSOR2LEFT 0x00//S/C=0,R/L=0:光标往左移
+#define LCD_CURSOR2RIGHT 0x04//S/C=0,R/L=1:光标往右移
+#define LCD_DC2LEFT 0x08//S/C=1,R/L=0:显示向左移，光标跟着移
+#define LCD_DC2RIGHT 0x0C//S/C=1,R/L=1:显示向右移,光标跟着移
+//LCD功能设置位(LCD_FUNCTIONSET=0x20)
+#define LCD_4BITMODE 0x00 //DL=0:4位(DB7-4)数据，需2次传输
+#define LCD_8BITMODE 0x10 //DL=1：8位(DB7-0)数据传输
+#define LCD_1LINE 0x00 //N=0，1行显示
+#define LCD_2LINE 0x08 //N=1，2行显示
+#define LCD_5X8DOTS 0x00 //F=0：5X8 dots字符
+#define LCD_5XADOTS 0x04 //F=1：5X10 dots字符，只能1行显示
+//LCD 1602 控制管脚：I2C数据的低4位（PCF8574-P0~3)
+#define LCD_RS 0x01 //PCF8574-P0控制LCD1602的RS管脚
+#define LCD_RW 0x02 //PCF8574-P1）控制LCD1602的RW管脚
+#define LCD_E 0x04 //PCF8574-P2）控制LCD1602的E管脚
+#define LCD_BACKLIGHTON 0x08 //PCF8574-P3控制LCD1602的K管脚
+#define LCD_SLAVE_ADDRESS 0x27 //从机地址PCF8574(A2-0:111)
+unsigned char TWI_Write_LCD(unsigned char uc_data)
+{ TWI_Start();//发送START信号
+	if(TWI_Get_State_Info()!=TW_START) return 0;//不成功
+	TWI_Write(LCD_SLAVE_ADDRESS<<1|TW_WRITE); //发送SLA+W
+	if(TWI_Get_State_Info()!=TW_MT_SLA_ACK)return 0;//不成功
+	TWI_Write(uc_data|LCD_BACKLIGHTON);//发送数据+背光常开
+	if(TWI_Get_State_Info()!=TW_MT_DATA_ACK)return 0;//不成功
+	TWI_Stop();
+	return 1;//成功
+}
+void LCD_4Bit_Write(unsigned char uc_data)//4位方式写PCF8574
+{ TWI_Write_LCD(uc_data);//数据送出，E=0
+	_delay_us(1);//保持
+	TWI_Write_LCD(uc_data|LCD_E);//数据送出，E=1
+	_delay_us(1);//保持
+	TWI_Write_LCD(uc_data & (~LCD_E));//数据送出，E=0
+	_delay_us(50);//等待数据传输结束
+}
+void LCD_8Bit_Write(unsigned char uc_data,unsigned char uc_mode)
+//2次4位数据传输方式写PCF9574,uc_mode:0-命令,1-数据
+{ unsigned char high4bit = uc_data & 0xf0;
+	unsigned char low4bit = (uc_data<<4)&0xf0;
+	LCD_4Bit_Write(high4bit|uc_mode);//先发送高4位
+	LCD_4Bit_Write(low4bit|uc_mode);//再发送低4位
+}
+void LCD_Init()//初始化LCD1602
+{ _delay_ms(50);//上电后至少再等40ms
+	LCD_4Bit_Write(0x30); //在默认8位接口，试着进入4位接口模式
+	_delay_us(4500);//等待至少4.5ms
+	LCD_4Bit_Write(0x30); _delay_us(4500);//等待至少4.5ms
+	LCD_4Bit_Write(0x30); _delay_us(150);//等待至少150us
+	LCD_4Bit_Write(0x20);//进入4位接口模式
+	//设置模式，显示，点数等
+	LCD_8Bit_Write(LCD_FUNCTIONSET|LCD_4BITMODE|LCD_2LINE|LCD_5X8DOTS,0);
+	LCD_8Bit_Write(LCD_DISPLAYCONTROL|LCD_DISPLAYON,0);//显示
+	LCD_8Bit_Write(LCD_CLEARDISPLAY,0); _delay_us(2000);//等待
+	LCD_8Bit_Write(LCD_ENTRYMODESET|LCD_ENTRYINC,0);//显示左移(递增)
+	LCD_8Bit_Write(LCD_RETURNHOME,0);//返回原点
+	_delay_us(2000);//等待
+}
+void LCD_Set_Cursor_Location(unsigned char row,unsigned char col)
+//设置光标位置,row:0~1,col:0~39
+{ unsigned char offset[]={0x0,0x40}; LCD_8Bit_Write(LCD_SETDDRAMADDR|(col+offset[row]),0);
+}
+void LCD_Write_NewChar(char c_data)//在当前位置显示
+{ LCD_8Bit_Write(c_data,1);
+}
+void LCD_Write_Char(unsigned char row,unsigned char col,char c_data)
+//在指定位置显示
+{ LCD_Set_Cursor_Location(row,col); LCD_8Bit_Write(c_data,1);
+}
+void LCD_Write_String(unsigned char row,unsigned char col,const char *pStr)
+//在指定位置显示串
+{
+	LCD_Set_Cursor_Location(row,col);
+	while((*pStr) != '\0')
+	{
+		LCD_8Bit_Write(*pStr,1);
+		pStr ++;
+	}
+}
+#endif /* TWI_LCD_H_ */
+#ifndef DS1302_H_
+#define DS1302_H_
+/*DS1302与ATmega8a的接口 PC2~SCLK,PC1~I/O,PC0~/RST */
+//DS1302地址定义
+//初始时间定义
+unsigned char time_buf[8] = {0x20,0x23,0x04,0x25,0x08,0x08,0x08,0x02};//
+unsigned char dis_time_buf[16]={0};//存放要显示的时间日期数据
+//DS1302初始化函数
+void ds1302_init(void)/*DS1302与MCU接口 PC2~SCLK,PC1~I/O,PC0~/RST */
+{
+	DDRC|=(1<<DDRC2)|(1<<DDRC1)|(1<<DDRC0);//PC2,1,0为输出
+	//DDRC &=~(1<<DDRC1);//PC1(I/O:DATA)暂为输入
+	PORTC &= ~(1<<PORTC0);//RST脚置低
+	PORTC &= ~(1<<PORTC2);//SCK脚置低
+}
+void ds1302_write_byte(unsigned char addr, unsigned char d) //向DS1302写入一字节数据
+{ unsigned char i;
+	PORTC |=(1<<PORTC0);//RST=1,启动DS1302总线
+	//写入目标地址：addr
+	addr = addr & 0xFE; //最低位置零，寄存器0位为0时写，为1时读
+	for (i = 0; i < 8; i ++) {//1Byte=8bit，从位0开始发送
+		if (addr & 0x01) PORTC |=(1<<PORTC1);//PC1(IO)输出1
+		else PORTC &=~(1<<PORTC1);//PC1(IO)输出0
+		_delay_us (1);
+		PORTC |=(1<<PORTC2);////产生时钟：PC2(SCLK)输出1
+		_delay_us (2);
+		PORTC &=~(1<<PORTC2);//PC2(SCLK)输出0
+		_delay_us (2);
+		addr = addr >> 1;
+	} //end for loop
+	//写入数据：d
+	for (i = 0; i < 8; i ++) {//1Byte=8bit，从位0开始发送
+		if (d & 0x01) { PORTC |=(1<<PORTC1);//PC1(IO)输出1
+		}
+		else { PORTC &=~(1<<PORTC1);//PC1(IO)输出0
+		}
+		_delay_us (1);
+		PORTC |=(1<<PORTC2);////产生时钟：PC2(SCLK)输出1
+		_delay_us (2);
+		PORTC &=~(1<<PORTC2);//PC2(SCLK)输出0
+		_delay_us (2);
+		d = d >> 1;
+	} //end for loop 2
+	PORTC &=~(1<<PORTC0);//RST=0,停止DS1302总线
+} //end for ds1302_write_byte function
+//从DS1302读出一字节数据
+unsigned char ds1302_read_byte(unsigned char addr) {
+	unsigned char i,temp=0;
+	PORTC |=(1<<PORTC0);//RST=1,启动DS1302总线
+	//写入目标地址：addr
+	addr = addr | 0x01; //最低位置1，寄存器0位为0时写，为1时读
+	for (i = 0; i < 8; i ++) {//1Byte=8bit，从位0开始发送
+		if (addr & 0x01) {PORTC |=(1<<PORTC1);//PC1(IO)输出1
+		 }
+		else { PORTC &=~(1<<PORTC1);//PC1(IO)输出0 
+		}
+		_delay_us (1);
+		PORTC |=(1<<PORTC2);////产生时钟：PC2(SCLK)输出1
+		_delay_us (2);
+		PORTC &=~(1<<PORTC2);//PC2(SCLK)输出0
+		_delay_us (2);
+		addr = addr >> 1;
+	} //end for loop 1
+	//读取数据到temp
+	DDRC &=~(1<<DDRC1);//PC1(IO),为输入
+	for (i = 0; i < 8; i ++) {//从0位开始接收
+		temp = temp >> 1;//每接收1位放在最高位
+		if (PINC & (1<<PINC1)) {//PC1管脚为1或0
+		temp |= 0x80;//收到1 
+		}
+		else { temp &= 0x7F;//收到0 
+		}
+		_delay_us (1);
+		PORTC |=(1<<PORTC2);////产生时钟：PC2(SCLK)输出1
+		_delay_us (2);
+		PORTC &=~(1<<PORTC2);//PC2(SCLK)输出0
+	_delay_us (2); }
+	DDRC |=(1<<DDRC1);//恢复PC1(IO),为输出
+	PORTC &=~(1<<PORTC0);//RST=0,停止DS1302总线
+	return temp;
+}
+#endif /* DS1302_H_ */
+
+主函数
+#include <avr/io.h>
+#define F_CPU 1000000UL
+#include <util/delay.h>
+#include <util/twi.h> //TWI接口状态码定义等
+#include "twi_lcd.h"
+#include <avr/interrupt.h>
+unsigned char hexStr[17]={'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','-'};
+unsigned char key_no[5]={16,16,16,16,0};//存放4位连续按下的编码,以’\0'结束
+unsigned char getkey,keyno;//取按键阵列扫描输入，按下按键的编码
+int main(void) { DDRD = (0xf0);//PD7~4为输出S_R0~3，PD3~0为输入S_C0~3
+	PORTD = (0xff);//PD7~4输出高电平,PD3~0的内部上拉电阻启用
+	TCCR0 = (1<<CS02)|(1<<CS00);//1024分频
+	TCNT0 = 102;//从102开始计数，1MHz/1024/154约为150ms中断一次
+	TIMSK |=(1<<TOIE0);//允许TOV0中断
+	TWI_Init(); LCD_Init();
+	sei();//全局中断开
+	while (1) 
+	{ LCD_Write_Char(0,1,hexStr[key_no[3]]);
+		LCD_Write_NewChar(hexStr[key_no[2]]);
+		LCD_Write_NewChar(hexStr[key_no[1]]);
+		LCD_Write_NewChar(hexStr[key_no[0]]);
+		_delay_ms(20); 
+	}
+}
+		ISR(TIMER0_OVF_vect)//溢出中断TCNT0=255溢出到102
+		{ TCNT0 = 102;//从102开始计数，1MHz/1024/154约为150ms中断一次
+			keyno = 16;//默认无按键按下
+			//1.扫描第1行
+			PORTD = ~(1<<PORTD7);//PORTD7为0,其它为1，送给第1行
+			_delay_us(2);
+			getkey = (PIND & 0x0f);//取按键阵列的列状态
+			switch(getkey) { case 0x07:keyno = 0;break;//1行1列编码为0/1 //S4
+				case 0x0b:keyno = 1;break;//1行2列编码为1/2 //S8
+				case 0x0d:keyno = 2;break;//1行3列编码为2/3 //S12
+			case 0x0e:keyno = 3;break;//1行4列编码为3/A //S16
+			 }
+			//2.扫描第2行
+			PORTD = ~(1<<PORTD6);//PORTD6为0,其它为1，送给第2行
+			_delay_us(2);
+			getkey = (PIND & 0x0f);//取按键阵列的列状态
+			//3.扫描第3行
+			//4.扫描第4行
+			PORTD = ~(1<<PORTD4);//PORTD4为0，其它为1，送给第4行
+			_delay_us(2); getkey = (PIND & 0x0f);//取按键阵列的列状态
+			switch(getkey) { case 0x07:keyno =12;break;//4行1列编码为12/*
+			case 0x0b:keyno =13;break;//4行2列编码为13/0
+			case 0x0d:keyno =14;break;//4行3列编码为14/#
+			case 0x0e:keyno =15;break;//4行4列编码为15/D
+			 }
+			/*一轮按键阵列处理结束*/
+			if(keyno<16) { key_no[3]=key_no[2]; //移动按键数据
+			key_no[2]=key_no[1];
+			key_no[1]=key_no[0];
+			key_no[0]=keyno; //新的按键数据 
+			}
+		} //ISR结束
+			
+
+#define F_CPU 8000000UL
+#include <avr/io.h>
+#include <util/delay.h>
+#include <avr/interrupt.h>
+#include "twi_lcd.h"
+unsigned char duty=50;//占空比，百分比
+unsigned int freq=30;//30~8000Hz
+ISR(INT0_vect)
+{ if(duty > 90)//百分比
+	 duty = 10;
+	else duty +=5;
+}
+ISR(INT1_vect)
+{ if(freq >7999) freq = 30;
+	else freq +=100;
+}
+int main(void)
+{ 
+	DDRD &=~((1<<DDRD2) |(1<<DDRD3));//INT0(PD2)和INT1(PD3)分别调整占空比和频率
+	PORTD |=(1<<PORTD2)|(1<<PORTD3);//开启内部上拉电阻，即PD2和PD3管脚默认为高电平
+	DDRB |=(1<<DDRB1);//PB1控制蜂鸣器的IO
+	MCUCR |=(1<<ISC01)|(1<<ISC11);//INT0和INT1下降沿触发中断（执行对应的ISR）
+	GICR |=(1<<INT0)|(1<<INT1);//开中断
+	sei();//全局中断开
+	unsigned int high,low,i;
+	while (1)
+	{ high = F_CPU/freq*duty/100;//
+		low = F_CPU/freq - high;//
+		if(low >1290)low-=1290;
+		high /=12; low /=12;
+		PORTB |=(1<<PORTB1);for(i=0;i<high;i++) _delay_us (1);
+		PORTB &=~(1<<PORTB1);for(i=0;i<low;i++) _delay_us (1);
+	}
+}
+#define F_CPU 1000000UL
+#include <avr/io.h>
+#include "twi_lcd.h"
+#include <util/delay.h>
+int main(void)
+{ unsigned char cmd_cnt=2,cmd_data[3]={0,0,0};//接收命令和数据
+UCSRC = 0x80;//清空UCSRC
+UBRRL = 0;//
+UBRRL = 12;//1MHz,4800bps,0.2%
+UCSRB = (1<<RXEN)|(1<<TXEN);//开启USART接收和发送
+UCSRC =(1<<URSEL)|(3<<UCSZ0);//异步,无校验,8位数据，1位停止位,...
+TWI_Init();
+LCD_Init();
+while (1)
+{ if(UCSRA & (1<<RXC))//有收到数据
+	{ cmd_data[cmd_cnt] = UDR;//读数据
+		cmd_cnt--;
+	}
+if(cmd_cnt<1)//收到两个字节
+{ switch(cmd_data[2])
+	{//case 0xc0://LCD指令直接操作
+		case 0x5c://proteus:\+命令
+		LCD_8Bit_Write(cmd_data[1],0);
+		break;
+		case 0xc1://读忙标志
+		break;
+		//case 0xc2://往RAM写数据
+		case 0x5d://proteus ]+显示字符
+		LCD_8Bit_Write(cmd_data[1],1);
+		break;
+		case 0xc3://从RAM读数据
+		break;
+	}
+	while(!(UCSRA & (1<<UDRE)));//等待发送
+	UDR = 'O';//发送字符
+	while(!(UCSRA & (1<<UDRE)));//等待发送
+	UDR = 'K';//发送字符
+	cmd_cnt=2;//接收下一次命令数据
+}
+_delay_ms (1);
+} //while结束
+} //main结束
+#define F_CPU 1000000UL
+#include <avr/io.h>
+#include "twi_lcd.h"
+#include <util/delay.h>
+int main(void)
+{ unsigned char i=2,ch=33;//变量
+	//UCSRC = 0x80;//清空UCSRC
+	UBRRH = 0;
+	UBRRL = 12;//1MHz,4800bps,0.2%
+	UCSRB = (1<<RXEN)|(1<<TXEN);
+	//开启USART接收和发送
+	UCSRC =(1<<URSEL)|(3<<UCSZ0);
+	//异步,无校验,8位，1停止位,...
+	TWI_Init();
+	LCD_Init();
+	LCD_Write_String(0,0,"S:");
+	//LCD第1行提示
+	LCD_Write_String(1,0,"R:");
+	while (1)
+	{ LCD_Write_Char(0,i,ch);//显示发送的数据
+		while(!(UCSRA & (1<<UDRE)));//等待发送
+		//可以发送数据？
+		UDR = ch;//发送数据
+		//_delay_us(100);
+		_delay_ms (200);
+		while(!(UCSRA & (1<<RXC)));//等待接收
+		LCD_Write_Char(1,i,UDR);//显示接收数据
+		if(i==15)i=2;//绕回来显示
+		else i++;
+		if(ch==127)ch=161;//跳过
+		else if(ch==223)ch=33;//绕回来
+		else ch++;//下一个可以显示的字符
+		_delay_ms (200);
+	} //while结束
+} //main结束
+
+#define F_CPU 1000000UL
+#include <avr/io.h>
+#include "twi_lcd.h"
+#include <util/delay.h>
+unsigned char tmp[4];
+int main(void)
+{ unsigned char i=0,tp_r=0;//临时变量
+	TCNT0 = 0;//利用TC0统计开关的次数
+	TCCR0 = (1<<CS02)|(1<<CS01)|(1<<CS00);
+	//对T0上升沿计数
+	UCSRC = 0x80;//清空UCSRC
+	UBRRH = 0;//
+	UBRRL = 12;//1MHz,4800bps,0.2%
+	UCSRB = (1<<RXEN)|(1<<TXEN);
+	//开启USART接收和发送
+	UCSRC =(1<<URSEL)|(3<<UCSZ0);
+	//异步,无校验,8位数据，1位停止位,...
+	TWI_Init();
+	LCD_Init();
+	LCD_Write_String(0,0,"a:Touchpad");
+	while (1)
+	{ if(tp_r!=TCNT0)//开关次数发生变化
+		{ tp_r = TCNT0;
+			//读取TCNT0，即新的开关次数
+			while(!(UCSRA & (1<<UDRE)));
+			//可以发送数据？
+			UDR = tp_r;//发送数据
+		}
+		if(UCSRA & (1<<RXC))//有收到数据?
+		{ LCD_Write_Char(1,i,UDR);//显示
+			i++;
+		}
+		if(i>15)i=0;//逐次显示，并回退
+		_delay_ms (1);
+	}
+}
+
+#define F_CPU 1000000UL
+#include <avr/io.h>
+#include "twi_lcd.h"
+#include <util/delay.h>
+unsigned char tmp[4];
+int main(void)
+{ unsigned char i=0,tp_r=0;//临时变量
+	TCNT0 = 0;//利用TC0统计开关的次数
+	TCCR0 = (1<<CS02)|(1<<CS01)|(1<<CS00);
+	//对T0上升沿计数
+	UCSRC = 0x80;//清空UCSRC
+	UBRRH = 0;
+	UBRRL = 12;//1MHz,4800bps,0.2%
+	UCSRB = (1<<RXEN)|(1<<TXEN);
+	//开启USART接收和发送
+	UCSRC =(1<<URSEL)|(3<<UCSZ0);
+	//异步,无校验,8位数据，1位停止位,...
+	TWI_Init();
+	LCD_Init();
+	LCD_Write_String(0,0,"b:Trans");
+	while (1)
+	{ if(UCSRA & (1<<RXC))//有收到数据
+		{ tp_r = UDR;//读数据
+			i=3; //1字节最多3位10进制数
+			while(tp_r>0)//转换成字符
+			{ tmp[i]=tp_r%10+0x30;
+				tp_r = tp_r/10;
+				while(!(UCSRA & (1<<UDRE)));//等待
+				UDR = tmp[i];//发送字符
+				i--;
+			}
+			while(i>0)//不足的位不显示
+			{ tmp[i--]=0x20; }
+			LCD_Write_String(1,0,tmp);
+		}
+		_delay_ms(1);
+	} //while结束
+} //main结束
+
+完成了扩展两个课件中的部分代码的实现，由于扩展实验比较综合，注意管脚与连线即可，并无太多额外注意事项

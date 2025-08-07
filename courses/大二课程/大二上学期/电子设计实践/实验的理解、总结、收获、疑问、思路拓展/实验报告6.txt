@@ -1,0 +1,300 @@
+PB22061324 张全
+
+实验内容1：测量温湿度并显示在LCD1602上
+#include <avr/io.h>
+#include "twi_lcd.h"
+#include "dht11.h"
+int main(void)
+{
+	unsigned char toggle=1,dht11_data[5]={0};
+	TWI_Init();
+	LCD_Init();
+	while (1)
+	{ DHT11_Run(dht11_data);
+		if(dht11_data[4]==(dht11_data[0]+dht11_data[1]+dht11_data[2]+dht11_data[3]))
+		{ LCD_Write_String(0,0,"Temperature:");//
+			LCD_Write_NewChar(dht11_data[2]/10%10+0x30);
+			LCD_Write_NewChar(dht11_data[2]%10+0x30);
+			LCD_Write_String(1,0,"Humidity:");//
+			LCD_Write_NewChar(dht11_data[0]/10%10+0x30);
+			LCD_Write_NewChar(dht11_data[0]%10+0x30);
+		}
+		if(toggle)
+		{ LCD_Write_Char(1,15,0x5c);//显示符号
+		toggle = 0;}
+		else
+		{ LCD_Write_Char(1,15,0x20);//不显示符号
+			toggle = 1;
+		}
+	_delay_ms(1500);
+	}
+}
+实验内容2：利用超声波测量距离并显示在LCD1602上
+#include <avr/io.h>
+#include "twi_lcd.h"
+#include "hc_sr04.h"
+int main(void)
+{
+	unsigned int distance=0;
+	unsigned char i=15,uc_d=0;
+	TWI_Init(); LCD_Init();
+	while (1)
+	{ distance = HCSR04_Run();
+		LCD_Write_String(0,0,"Distance:");
+		i=15; //从最低位开始转换和显示，最多7位
+		while(distance>0)
+		{ uc_d = distance % 10+0x30;
+			LCD_Write_Char(0,i,uc_d);
+		i--; distance /=10;}
+		while(i>8) //高位没有数字时不显示
+		{ LCD_Write_Char(0,i,0x20);
+            i--;
+		 }
+   _delay_ms(100);}
+}
+
+实验内容3：利用ADC测量光敏电阻两端的电压并显示在LCD1602上
+#include <avr/io.h>
+#include "twi_lcd.h"
+void ADC_Init(unsigned char adc_ch)//ADC初始化，低4bit,adc0~7:0~7
+{ ADMUX = (1<<REFS0)|(adc_ch & 0x0f);//参考电压：AVCC，低4bit为通道选择
+	ADCSRA = (1<<ADEN)|(1<<ADFR)|(1<<ADPS1)|(1<<ADPS0);//开启ADC，连续模式,右对齐，
+	//预分频8，1000/8=125kHz
+ADCSRA |=(1<<ADSC);//ADC开始转换
+}
+int main(void)
+{ unsigned char adc_dh,adc_dl;
+	//用于存储adch/l寄存器里的数据
+	float adc_result;//adc采集结果
+	unsigned char i,uc_int,uc_display[8];//临时变量
+	LCD_Init();
+	ADC_Init(3); //初始化adc，对ADC3（PC3）采样，参考电压…
+	while (1)
+	{ while(!(ADCSRA & (1<<ADIF)));//等待ADC转换结束
+		adc_dl = ADCL;//先读低8位
+		adc_dh = ADCH;//再读高8位
+		adc_result = adc_dh *256.0+adc_dl;//合并
+		adc_result *=5.0/1024.0;//计算电压
+		for(i=0;i<8;i++)//初始化显示变量，都不显示
+		{ uc_display[i]=0x20; }
+		LCD_Write_String(0,0,"ADC Result:");
+		uc_int = (unsigned char) adc_result;//取整数
+		adc_result -=uc_int;//取小数
+		i=2;//整数占2位
+		uc_display[3]=0x30;//初始整数为0
+		while(uc_int > 0 && i >0)
+		{ uc_display[i--]=uc_int%10+0x30;//最低位数字转换成字符
+		uc_int/=10;/*去掉整数的最低位*/}
+		uc_display[3]='.';//小数点
+		i=4; //小数从元素4开始存储
+		while(adc_result>0 && i<7)//三位小数
+		{
+			adc_result *=10;//第一位小数调整到整数
+			uc_int = (unsigned char) adc_result;//取整数
+			adc_result -=uc_int; //剩下的小数部分
+			uc_display[i++]=uc_int+0x30; //当前的小数为转换为字符以显示
+		}
+		uc_display[7]=0; //字符结束
+		LCD_Write_String(1,8,uc_display); //显示采集转换后的电压数值
+		_delay_us(300);
+		}
+	}
+注意：
+头文件1：#ifndef DHT11_H_
+#define DHT11_H_
+#ifndef F_CPU
+#define F_CPU 1000000UL
+#endif
+#include <avr/io.h>
+#include <util/delay.h>
+unsigned char byteReadDHT11(void) //从DHT11读取一个字节的数据
+{ unsigned char oneBit,oneByte=0;//每次接收1位，最后完成8位接收并返回
+	unsigned char i,uc_cnt;//循环变量，超时计数（脉冲宽度统计）
+	for(i=0;i<8;i++)//接收8位数据，先接收的是最高位
+	{//1bit由50us的低电平开始，后跟26~28us的高电平为0，70us的高电平为1
+		uc_cnt = 1;//超时计数初值，统计50us低电平
+		while((PIND & (1<<PIND7))==0)//在50us的低电平
+		{ uc_cnt++;//超时计数
+		if(uc_cnt==0)break;/*计数溢出：超时，跳过*/}
+		_delay_us(30);//跳过30us的高电平，如还是高电平收到‘1’，否则收到‘0’
+		oneBit = 0;//假定收到‘0’
+		if((PIND & (1<<PIND7))!=0)oneBit = 1;//还是高电平，收到‘1’
+		uc_cnt = 1;//超时计数初值，统计70us高电平
+		while((PIND & (1<<PIND7))!=0)//在70us的高电平
+		{ uc_cnt++; /*超时计数*/if(uc_cnt==0)break;/*计数溢出:超时，跳过*/}
+		oneByte <<=1;//收到1位后，之前收到的为高位，故左移一位
+	oneByte |=oneBit;/*新收到的合并到字节中*/}
+	return oneByte; /*返回收到的1字节*/
+}
+void DHT11_Run(unsigned char * uc_data) //与DHT11通信的设置和数据传输等
+{ unsigned char uc_cnt;//超时计数（脉冲宽度统计）
+	DDRD |=(1<<DDRD7);//PD7为输出模式
+	PORTD &=~(1<<PORTD7);/*PD7输出0*/_delay_ms(20);//至少18ms的START信号
+	PORTD |=(1<<PORTD7); /*PD7输出1:20~40us*/_delay_us(20);//20us高电平
+	DDRD &=~(1<<DDRD7); /*PD7为输入模式*/_delay_us(20);//等待DHT11响应
+	if((PIND &(1<<PIND7))!=0)return;//DHT11没有响应
+	uc_cnt = 1;//超时计数初值，统计80us低电平响应
+	while((PIND & (1<<PIND7))==0)//在80us的低电平
+	{ uc_cnt++;//超时计数
+	if(uc_cnt==0)break;/*计数溢出：超时，跳过*/}
+	uc_cnt = 1;//超时计数初值，统计80us高电平响应
+	while((PIND & (1<<PIND7))!=0)//在80us的高电平
+	{ uc_cnt++; /*超时计数*/ if(uc_cnt==0)break; /*计数溢出：超时，跳过*/
+	}
+	for(uc_cnt=0;uc_cnt<5;uc_cnt++) //接收DHT11发送的40位温湿度数据
+	{ uc_data[uc_cnt]=byteReadDHT11();//0-湿度整/小数,温度整/小数,校验-4
+	}
+}
+#endif /* DHT11_H_ */
+头文件2：
+#ifndef TWI_FUN_H_
+#define TWI_FUN_H_
+#include <util/twi.h>//软件自带TWI接口的寄存器等头文件
+void TWI_Init(void)//twi 接口的初始化
+{//设置SCL的频率：1MHz cpu-50KHz scl,2M-100K,8M-400K
+	TWSR = 0x00; //最低2位为预分频设置(00-1,01-4,10-16,11-64)
+	TWBR = 0x02; //位率设置，fscl=cpu频率/(16+2*TWBR*预分频值)
+	TWCR = (1<<TWEN); //开启TWI
+}
+void TWI_Start(void)//发送Start信号，开始本次TWI通信
+{ TWCR = (1<<TWINT)|(1<<TWSTA)|(1<<TWEN);//发送Start信号
+	while(!(TWCR &(1<<TWINT)));//等待Start信号发出
+}
+void TWI_Stop(void)//发送Stop信号，结束本次TWI通信
+{ TWCR = (1<<TWINT)|(1<<TWSTO)|(1<<TWEN);//发送Stop信号
+}
+void TWI_Write(unsigned char uc_data) //向TWI接口发送8位数据
+{
+	TWDR = uc_data;//8位数据存放在TWDR
+	TWCR = (1<<TWINT)|(1<<TWEN);//发送TWDR中的数据
+	while(!(TWCR &(1<<TWINT)));//等待数据发出
+}
+unsigned char TWI_Read_With_ACK(void)
+{
+	TWCR = (1<<TWINT)|(1<<TWEA)|(1<<TWEN);//准备接收数据，并ACK
+	while(!(TWCR &(1<<TWINT)));//等待接收数据
+	return TWDR;//返回接收到的数据
+}
+unsigned char TWI_Read_With_NACK(void)
+{
+	TWCR = (1<<TWINT)|(1<<TWEN);//准备接收数据，并NACK
+	while(!(TWCR &(1<<TWINT)));//等待接收数据
+	return TWDR;//返回接收到的数据
+}unsigned char TWI_Get_State_Info(void)
+{
+	unsigned char uc_status;
+	uc_status = TWSR & 0xf8;
+	return uc_status;
+}
+#endif /* TWI_FUN_H_ */
+头文件3：
+#ifndef TWI_LCD_H_
+#define TWI_LCD_H_
+#ifndef F_CPU
+#define F_CPU 1000000UL //延时用
+#endif
+#include "twi_fun.h"
+#include <util/delay.h>
+//LCD1602 控制和显示指令
+#define LCD_CLEARDISPLAY 0x01//清屏，设置AC为DDRAM地址0
+#define LCD_RETURNHOME 0x02//设置AC为DDRAM地址0，光标回原点
+#define LCD_ENTRYMODESET 0x04//与I/D和S位定义光标移动方向和显示移位
+#define LCD_DISPLAYCONTROL 0x08//与D/C/B设置显示开关，光标开关/闪烁
+#define LCD_CURSORSHIFT 0x10//与S/C和R/L一起设置光标移动或显示移位
+#define LCD_FUNCTIONSET 0x20//与DL、N和F一起设置LCD功能:8/4位数
+//据;1/2行显示;5*8/10点阵字符
+#define LCD_SETCGRAMADDR 0x40//设置CGRAM地址到地址计数器(AC）
+#define LCD_SETDDRAMADDR 0x80//设置DDRAM地址到地址计数器(AC）
+// LCD进入模式设置位(LCD_ENTRYMODESET=0x04)
+#define LCD_ENTRYSHIFT 0x01//S位=1，显示移位，=0不移位
+#define LCD_ENTRYINC 0x02//I/D位=1，显示左移(递增)
+//LCD显示开关控制位 (LCD_DISPLAYCONTROL=0x08)
+#define LCD_BLINKON 0x01//B=1，闪烁
+#define LCD_CURSORON 0x02//C=1，光标
+#define LCD_DISPLAYON 0x04//D=1，显示开
+//LCD光标和显示移位控制位(LCD_CURSORSHIFT=0x10)
+#define LCD_CURSOR2LEFT 0x00//S/C=0,R/L=0:光标往左移
+#define LCD_CURSOR2RIGHT 0x04//S/C=0,R/L=1:光标往右移
+#define LCD_DC2LEFT 0x08//S/C=1,R/L=0:显示向左移，光标跟着移
+#define LCD_DC2RIGHT 0x0C//S/C=1,R/L=1:显示向右移,光标跟着移
+//LCD功能设置位(LCD_FUNCTIONSET=0x20)
+#define LCD_4BITMODE 0x00 //DL=0:4位(DB7-4)数据，需2次传输
+#define LCD_8BITMODE 0x10 //DL=1：8位(DB7-0)数据传输
+#define LCD_1LINE 0x00 //N=0，1行显示
+#define LCD_2LINE 0x08 //N=1，2行显示
+#define LCD_5X8DOTS 0x00 //F=0：5X8 dots字符
+#define LCD_5XADOTS 0x04 //F=1：5X10 dots字符，只能1行显示
+//LCD 1602 控制管脚：I2C数据的低4位（PCF8574-P0~3)
+#define LCD_RS 0x01 //PCF8574-P0控制LCD1602的RS管脚
+#define LCD_RW 0x02 //PCF8574-P1）控制LCD1602的RW管脚
+#define LCD_E 0x04 //PCF8574-P2）控制LCD1602的E管脚
+#define LCD_BACKLIGHTON 0x08 //PCF8574-P3控制LCD1602的K管脚
+#define LCD_SLAVE_ADDRESS 0x27 //从机地址PCF8574(A2-0:111)
+unsigned char TWI_Write_LCD(unsigned char uc_data)
+{ TWI_Start();//发送START信号
+	if(TWI_Get_State_Info()!=TW_START) return 0;//不成功
+	TWI_Write(LCD_SLAVE_ADDRESS<<1|TW_WRITE); //发送SLA+W
+	if(TWI_Get_State_Info()!=TW_MT_SLA_ACK)return 0;//不成功
+	TWI_Write(uc_data|LCD_BACKLIGHTON);//发送数据+背光常开
+	if(TWI_Get_State_Info()!=TW_MT_DATA_ACK)return 0;//不成功
+	TWI_Stop();
+	return 1;//成功
+}
+void LCD_4Bit_Write(unsigned char uc_data)//4位方式写PCF8574
+{ TWI_Write_LCD(uc_data);//数据送出，E=0
+	_delay_us(1);//保持
+	TWI_Write_LCD(uc_data|LCD_E);//数据送出，E=1
+	_delay_us(1);//保持
+	TWI_Write_LCD(uc_data & (~LCD_E));//数据送出，E=0
+	_delay_us(50);//等待数据传输结束
+}
+void LCD_8Bit_Write(unsigned char uc_data,unsigned char uc_mode)
+//2次4位数据传输方式写PCF9574,uc_mode:0-命令,1-数据
+{ unsigned char high4bit = uc_data & 0xf0;
+	unsigned char low4bit = (uc_data<<4)&0xf0;
+	LCD_4Bit_Write(high4bit|uc_mode);//先发送高4位
+	LCD_4Bit_Write(low4bit|uc_mode);//再发送低4位
+}
+void LCD_Init()//初始化LCD1602
+{ _delay_ms(50);//上电后至少再等40ms
+	LCD_4Bit_Write(0x30); //在默认8位接口，试着进入4位接口模式
+	_delay_us(4500);//等待至少4.5ms
+	LCD_4Bit_Write(0x30); _delay_us(4500);//等待至少4.5ms
+	LCD_4Bit_Write(0x30); _delay_us(150);//等待至少150us
+	LCD_4Bit_Write(0x20);//进入4位接口模式
+	//设置模式，显示，点数等
+	LCD_8Bit_Write(LCD_FUNCTIONSET|LCD_4BITMODE|LCD_2LINE|LCD_5X8DOTS,
+	0);
+	LCD_8Bit_Write(LCD_DISPLAYCONTROL|LCD_DISPLAYON,0);//显示
+	LCD_8Bit_Write(LCD_CLEARDISPLAY,0); _delay_us(2000);//等待
+	LCD_8Bit_Write(LCD_ENTRYMODESET|LCD_ENTRYINC,0);//显示左移(递增)
+	LCD_8Bit_Write(LCD_RETURNHOME,0);//返回原点
+	_delay_us(2000);//等待
+}
+void LCD_Set_Cursor_Location(unsigned char row,unsigned char col)
+//设置光标位置,row:0~1,col:0~39
+{ unsigned char offset[]={0x0,0x40}; LCD_8Bit_Write(LCD_SETDDRAMADDR|(col+offset[row]),0);
+}
+void LCD_Write_NewChar(char c_data)//在当前位置显示
+{ LCD_8Bit_Write(c_data,1);
+}
+void LCD_Write_Char(unsigned char row,unsigned char col,char c_data)
+//在指定位置显示
+{ LCD_Set_Cursor_Location(row,col); LCD_8Bit_Write(c_data,1);
+}
+void LCD_Write_String(unsigned char row,unsigned char col,const char *pStr)
+//在指定位置显示串
+{
+	LCD_Set_Cursor_Location(row,col);
+	while((*pStr) != '\0')
+	{
+		LCD_8Bit_Write(*pStr,1);
+		pStr ++;
+	}
+
+}
+#endif /* TWI_LCD_H_ */
+实验收获：
+1.在写头文件时漏了一个大括号导致debug时不断报{}错误，而此时主函数内部并没有{}类bug，从而导致一直不能有效改正语句错误
+2.在书写第二个程序的时候，需要手动添加int main(void)与{}
+3.必须把之前写好的twi_fun.h和twi_icd.h以及新写的dht11.h头文件一起连接到本次的3个程序里面
