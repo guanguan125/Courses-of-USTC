@@ -1,0 +1,9 @@
+
+State Machine - |FGPA_EXP_tem|ds18b20_ctrl:U0|state
+Name state.S_RD_TEMP state.S_RD_CMD state.S_INIT_AGAIN state.S_WAIT state.S_WR_CMD state.S_INIT 
+state.S_INIT 0 0 0 0 0 0 
+state.S_WR_CMD 0 0 0 0 1 1 
+state.S_WAIT 0 0 0 1 0 1 
+state.S_INIT_AGAIN 0 0 1 0 0 1 
+state.S_RD_CMD 0 1 0 0 0 1 
+state.S_RD_TEMP 1 0 0 0 0 1 

@@ -1,0 +1,171 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 dE:/class/FPGA_EXP/FGPA_EXP_tem/simulation/modelsim
+T_opt
+!s110 1731414024
+VBXjin1iXVB6UfkfR_mMF?2
+04 15 4 work FGPA_EXP_tem_tb fast 0
+=1-5811223c106d-67334807-373-55fc
+o-quiet -auto_acc_if_foreign -work work -L altera_ver -L lpm_ver -L sgate_ver -L altera_mf_ver -L altera_lnsim_ver -L cyclonev_ver -L cyclonev_hssi_ver -L cyclonev_pcie_hip_ver -L rtl_work -L work +acc
+n@_opt
+OL;O;10.4;61
+vCounter8
+Z1 !s110 1731414022
+!i10b 1
+!s100 6kS:=_Um392k0YoT<4K2M2
+IOX^3ZOV192>5U;z:f6=c32
+Z2 VDg1SIo80bB@j0V0VzS_@n1
+R0
+Z3 w1731413948
+Z4 8E:/class/FPGA_EXP/FGPA_EXP_tem/FGPA_EXP_tem.v
+Z5 FE:/class/FPGA_EXP/FGPA_EXP_tem/FGPA_EXP_tem.v
+L0 288
+Z6 OL;L;10.4;61
+r1
+!s85 0
+31
+Z7 !s108 1731414022.968000
+Z8 !s107 E:/class/FPGA_EXP/FGPA_EXP_tem/FGPA_EXP_tem.v|
+Z9 !s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+E:/class/FPGA_EXP/FGPA_EXP_tem|E:/class/FPGA_EXP/FGPA_EXP_tem/FGPA_EXP_tem.v|
+!i113 0
+Z10 o-vlog01compat -work work -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+Z11 !s92 -vlog01compat -work work +incdir+E:/class/FPGA_EXP/FGPA_EXP_tem -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+n@counter8
+vDecoder38
+R1
+!i10b 1
+!s100 cePOm;k<YOeQI@WSf:`YA2
+I8kPanAAod`E9>4mQ4caTR2
+R2
+R0
+R3
+R4
+R5
+L0 307
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 0
+R10
+R11
+n@decoder38
+vDecoder47
+R1
+!i10b 1
+!s100 I@U==KW]:G1Do:aKcjC6>0
+IoAZ9<cn=l0Ub<bb]nO=5J0
+R2
+R0
+R3
+R4
+R5
+L0 331
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 0
+R10
+R11
+n@decoder47
+vDiv50MHz
+R1
+!i10b 1
+!s100 z^;^V]Dn[o[jJRdUMiQRf3
+IVFk?8K3^i3Z_M:gCWVnW:2
+R2
+R0
+R3
+R4
+R5
+L0 265
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 0
+R10
+R11
+n@div50@m@hz
+vds18b20_ctrl
+R1
+!i10b 1
+!s100 D?d88zohc8A1dGa]jX?bC1
+IZE517YoMQJ<8c]<f<?[L?0
+R2
+R0
+R3
+R4
+R5
+L0 1
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 0
+R10
+R11
+vFGPA_EXP_tem
+R1
+!i10b 1
+!s100 A0`i0=AW[3RezK09FcCz71
+IFJKKEUECVfPa8M>TSXoVW1
+R2
+R0
+R3
+R4
+R5
+L0 442
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 0
+R10
+R11
+n@f@g@p@a_@e@x@p_tem
+vFGPA_EXP_tem_tb
+!s110 1731414023
+!i10b 1
+!s100 :?Pi4GG5RO=06MTNgU`C[1
+IkWfbO6]0Z]O33LMTYhF[50
+R2
+R0
+w1731414003
+8E:/class/FPGA_EXP/FGPA_EXP_tem/FPGA_EXP_tem_tb.v
+FE:/class/FPGA_EXP/FGPA_EXP_tem/FPGA_EXP_tem_tb.v
+L0 2
+R6
+r1
+!s85 0
+31
+!s108 1731414023.058000
+!s107 E:/class/FPGA_EXP/FGPA_EXP_tem/FPGA_EXP_tem_tb.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+E:/class/FPGA_EXP/FGPA_EXP_tem|E:/class/FPGA_EXP/FGPA_EXP_tem/FPGA_EXP_tem_tb.v|
+!i113 0
+R10
+R11
+n@f@g@p@a_@e@x@p_tem_tb

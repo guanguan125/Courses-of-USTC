@@ -1,0 +1,18 @@
+`timescale 10ns/1ns
+module FPGA_EXP2_tb();
+	reg ;
+	wire ;
+	
+	always begin
+	
+	end
+	
+	latch4 U4(en,data4,csout[0],dout0);
+	latch4 U5(en,data4,csout[1],dout1);
+	latch4 U6(en,data4,csout[2],dout2);
+	latch4 U7(en,data4,csout[3],dout3);
+	latch4 U8(en,data4,csout[4],dout4);
+	latch4 U9(en,data4,csout[5],dout5);
+	latch4 U10(en,data4,csout[6],dout6);
+	latch4 U11(en,data4,csout[7],dout7);
+	Decoder38 U12(cs,csout);

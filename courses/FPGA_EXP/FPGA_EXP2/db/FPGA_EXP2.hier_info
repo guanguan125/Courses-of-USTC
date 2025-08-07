@@ -1,0 +1,270 @@
+|FPGA_EXP2_fhr
+clk => clk.IN1
+dout[0] << Decoder38:U3.port1
+dout[1] << Decoder38:U3.port1
+dout[2] << Decoder38:U3.port1
+dout[3] << Decoder38:U3.port1
+dout[4] << Decoder38:U3.port1
+dout[5] << Decoder38:U3.port1
+dout[6] << Decoder38:U3.port1
+dout[7] << Decoder38:U3.port1
+en => en.IN8
+data4[0] => data4[0].IN8
+data4[1] => data4[1].IN8
+data4[2] => data4[2].IN8
+data4[3] => data4[3].IN8
+cs[0] => cs[0].IN1
+cs[1] => cs[1].IN1
+cs[2] => cs[2].IN1
+out7[0] << Decoder47:U13.port1
+out7[1] << Decoder47:U13.port1
+out7[2] << Decoder47:U13.port1
+out7[3] << Decoder47:U13.port1
+out7[4] << Decoder47:U13.port1
+out7[5] << Decoder47:U13.port1
+out7[6] << Decoder47:U13.port1
+
+
+|FPGA_EXP2_fhr|Div50MHz:U1
+clk => clkout~reg0.CLK
+clk => cnt[0].CLK
+clk => cnt[1].CLK
+clk => cnt[2].CLK
+clk => cnt[3].CLK
+clk => cnt[4].CLK
+clk => cnt[5].CLK
+clk => cnt[6].CLK
+clk => cnt[7].CLK
+clk => cnt[8].CLK
+clk => cnt[9].CLK
+clk => cnt[10].CLK
+clk => cnt[11].CLK
+clk => cnt[12].CLK
+clk => cnt[13].CLK
+clk => cnt[14].CLK
+clk => cnt[15].CLK
+clk => cnt[16].CLK
+clk => cnt[17].CLK
+clk => cnt[18].CLK
+clk => cnt[19].CLK
+clk => cnt[20].CLK
+clk => cnt[21].CLK
+clk => cnt[22].CLK
+clk => cnt[23].CLK
+clk => cnt[24].CLK
+clk => cnt[25].CLK
+clk => cnt[26].CLK
+clk => cnt[27].CLK
+clk => cnt[28].CLK
+clk => cnt[29].CLK
+clk => cnt[30].CLK
+clk => cnt[31].CLK
+clkout <= clkout~reg0.DB_MAX_OUTPUT_PORT_TYPE
+
+
+|FPGA_EXP2_fhr|Counter8:U2
+clk => tmp_q[0].CLK
+clk => tmp_q[1].CLK
+clk => tmp_q[2].CLK
+q[0] <= tmp_q[0].DB_MAX_OUTPUT_PORT_TYPE
+q[1] <= tmp_q[1].DB_MAX_OUTPUT_PORT_TYPE
+q[2] <= tmp_q[2].DB_MAX_OUTPUT_PORT_TYPE
+
+
+|FPGA_EXP2_fhr|Decoder38:U3
+din[0] => Decoder0.IN2
+din[1] => Decoder0.IN1
+din[2] => Decoder0.IN0
+dout[0] <= Decoder0.DB_MAX_OUTPUT_PORT_TYPE
+dout[1] <= Decoder0.DB_MAX_OUTPUT_PORT_TYPE
+dout[2] <= Decoder0.DB_MAX_OUTPUT_PORT_TYPE
+dout[3] <= Decoder0.DB_MAX_OUTPUT_PORT_TYPE
+dout[4] <= Decoder0.DB_MAX_OUTPUT_PORT_TYPE
+dout[5] <= Decoder0.DB_MAX_OUTPUT_PORT_TYPE
+dout[6] <= Decoder0.DB_MAX_OUTPUT_PORT_TYPE
+dout[7] <= Decoder0.DB_MAX_OUTPUT_PORT_TYPE
+
+
+|FPGA_EXP2_fhr|latch4:U4
+en => dataout4[3].IN0
+data4[0] => dataout4[0]$latch.DATAIN
+data4[1] => dataout4[1]$latch.DATAIN
+data4[2] => dataout4[2]$latch.DATAIN
+data4[3] => dataout4[3]$latch.DATAIN
+cs => dataout4[3].IN1
+dataout4[0] <= dataout4[0]$latch.DB_MAX_OUTPUT_PORT_TYPE
+dataout4[1] <= dataout4[1]$latch.DB_MAX_OUTPUT_PORT_TYPE
+dataout4[2] <= dataout4[2]$latch.DB_MAX_OUTPUT_PORT_TYPE
+dataout4[3] <= dataout4[3]$latch.DB_MAX_OUTPUT_PORT_TYPE
+
+
+|FPGA_EXP2_fhr|latch4:U5
+en => dataout4[3].IN0
+data4[0] => dataout4[0]$latch.DATAIN
+data4[1] => dataout4[1]$latch.DATAIN
+data4[2] => dataout4[2]$latch.DATAIN
+data4[3] => dataout4[3]$latch.DATAIN
+cs => dataout4[3].IN1
+dataout4[0] <= dataout4[0]$latch.DB_MAX_OUTPUT_PORT_TYPE
+dataout4[1] <= dataout4[1]$latch.DB_MAX_OUTPUT_PORT_TYPE
+dataout4[2] <= dataout4[2]$latch.DB_MAX_OUTPUT_PORT_TYPE
+dataout4[3] <= dataout4[3]$latch.DB_MAX_OUTPUT_PORT_TYPE
+
+
+|FPGA_EXP2_fhr|latch4:U6
+en => dataout4[3].IN0
+data4[0] => dataout4[0]$latch.DATAIN
+data4[1] => dataout4[1]$latch.DATAIN
+data4[2] => dataout4[2]$latch.DATAIN
+data4[3] => dataout4[3]$latch.DATAIN
+cs => dataout4[3].IN1
+dataout4[0] <= dataout4[0]$latch.DB_MAX_OUTPUT_PORT_TYPE
+dataout4[1] <= dataout4[1]$latch.DB_MAX_OUTPUT_PORT_TYPE
+dataout4[2] <= dataout4[2]$latch.DB_MAX_OUTPUT_PORT_TYPE
+dataout4[3] <= dataout4[3]$latch.DB_MAX_OUTPUT_PORT_TYPE
+
+
+|FPGA_EXP2_fhr|latch4:U7
+en => dataout4[3].IN0
+data4[0] => dataout4[0]$latch.DATAIN
+data4[1] => dataout4[1]$latch.DATAIN
+data4[2] => dataout4[2]$latch.DATAIN
+data4[3] => dataout4[3]$latch.DATAIN
+cs => dataout4[3].IN1
+dataout4[0] <= dataout4[0]$latch.DB_MAX_OUTPUT_PORT_TYPE
+dataout4[1] <= dataout4[1]$latch.DB_MAX_OUTPUT_PORT_TYPE
+dataout4[2] <= dataout4[2]$latch.DB_MAX_OUTPUT_PORT_TYPE
+dataout4[3] <= dataout4[3]$latch.DB_MAX_OUTPUT_PORT_TYPE
+
+
+|FPGA_EXP2_fhr|latch4:U8
+en => dataout4[3].IN0
+data4[0] => dataout4[0]$latch.DATAIN
+data4[1] => dataout4[1]$latch.DATAIN
+data4[2] => dataout4[2]$latch.DATAIN
+data4[3] => dataout4[3]$latch.DATAIN
+cs => dataout4[3].IN1
+dataout4[0] <= dataout4[0]$latch.DB_MAX_OUTPUT_PORT_TYPE
+dataout4[1] <= dataout4[1]$latch.DB_MAX_OUTPUT_PORT_TYPE
+dataout4[2] <= dataout4[2]$latch.DB_MAX_OUTPUT_PORT_TYPE
+dataout4[3] <= dataout4[3]$latch.DB_MAX_OUTPUT_PORT_TYPE
+
+
+|FPGA_EXP2_fhr|latch4:U9
+en => dataout4[3].IN0
+data4[0] => dataout4[0]$latch.DATAIN
+data4[1] => dataout4[1]$latch.DATAIN
+data4[2] => dataout4[2]$latch.DATAIN
+data4[3] => dataout4[3]$latch.DATAIN
+cs => dataout4[3].IN1
+dataout4[0] <= dataout4[0]$latch.DB_MAX_OUTPUT_PORT_TYPE
+dataout4[1] <= dataout4[1]$latch.DB_MAX_OUTPUT_PORT_TYPE
+dataout4[2] <= dataout4[2]$latch.DB_MAX_OUTPUT_PORT_TYPE
+dataout4[3] <= dataout4[3]$latch.DB_MAX_OUTPUT_PORT_TYPE
+
+
+|FPGA_EXP2_fhr|latch4:U10
+en => dataout4[3].IN0
+data4[0] => dataout4[0]$latch.DATAIN
+data4[1] => dataout4[1]$latch.DATAIN
+data4[2] => dataout4[2]$latch.DATAIN
+data4[3] => dataout4[3]$latch.DATAIN
+cs => dataout4[3].IN1
+dataout4[0] <= dataout4[0]$latch.DB_MAX_OUTPUT_PORT_TYPE
+dataout4[1] <= dataout4[1]$latch.DB_MAX_OUTPUT_PORT_TYPE
+dataout4[2] <= dataout4[2]$latch.DB_MAX_OUTPUT_PORT_TYPE
+dataout4[3] <= dataout4[3]$latch.DB_MAX_OUTPUT_PORT_TYPE
+
+
+|FPGA_EXP2_fhr|latch4:U11
+en => dataout4[3].IN0
+data4[0] => dataout4[0]$latch.DATAIN
+data4[1] => dataout4[1]$latch.DATAIN
+data4[2] => dataout4[2]$latch.DATAIN
+data4[3] => dataout4[3]$latch.DATAIN
+cs => dataout4[3].IN1
+dataout4[0] <= dataout4[0]$latch.DB_MAX_OUTPUT_PORT_TYPE
+dataout4[1] <= dataout4[1]$latch.DB_MAX_OUTPUT_PORT_TYPE
+dataout4[2] <= dataout4[2]$latch.DB_MAX_OUTPUT_PORT_TYPE
+dataout4[3] <= dataout4[3]$latch.DB_MAX_OUTPUT_PORT_TYPE
+
+
+|FPGA_EXP2_fhr|Decide1From8:U12
+D0[0] => Mux3.IN0
+D0[1] => Mux2.IN0
+D0[2] => Mux1.IN0
+D0[3] => Mux0.IN0
+D1[0] => Mux3.IN1
+D1[1] => Mux2.IN1
+D1[2] => Mux1.IN1
+D1[3] => Mux0.IN1
+D2[0] => Mux3.IN2
+D2[1] => Mux2.IN2
+D2[2] => Mux1.IN2
+D2[3] => Mux0.IN2
+D3[0] => Mux3.IN3
+D3[1] => Mux2.IN3
+D3[2] => Mux1.IN3
+D3[3] => Mux0.IN3
+D4[0] => Mux3.IN4
+D4[1] => Mux2.IN4
+D4[2] => Mux1.IN4
+D4[3] => Mux0.IN4
+D5[0] => Mux3.IN5
+D5[1] => Mux2.IN5
+D5[2] => Mux1.IN5
+D5[3] => Mux0.IN5
+D6[0] => Mux3.IN6
+D6[1] => Mux2.IN6
+D6[2] => Mux1.IN6
+D6[3] => Mux0.IN6
+D7[0] => Mux3.IN7
+D7[1] => Mux2.IN7
+D7[2] => Mux1.IN7
+D7[3] => Mux0.IN7
+Out[0] <= Mux3.DB_MAX_OUTPUT_PORT_TYPE
+Out[1] <= Mux2.DB_MAX_OUTPUT_PORT_TYPE
+Out[2] <= Mux1.DB_MAX_OUTPUT_PORT_TYPE
+Out[3] <= Mux0.DB_MAX_OUTPUT_PORT_TYPE
+din[0] => Mux0.IN10
+din[0] => Mux1.IN10
+din[0] => Mux2.IN10
+din[0] => Mux3.IN10
+din[1] => Mux0.IN9
+din[1] => Mux1.IN9
+din[1] => Mux2.IN9
+din[1] => Mux3.IN9
+din[2] => Mux0.IN8
+din[2] => Mux1.IN8
+din[2] => Mux2.IN8
+din[2] => Mux3.IN8
+
+
+|FPGA_EXP2_fhr|Decoder47:U13
+in4[0] => Decoder0.IN3
+in4[1] => Decoder0.IN2
+in4[2] => Decoder0.IN1
+in4[3] => Decoder0.IN0
+out7[0] <= WideOr3.DB_MAX_OUTPUT_PORT_TYPE
+out7[1] <= WideOr2.DB_MAX_OUTPUT_PORT_TYPE
+out7[2] <= WideOr1.DB_MAX_OUTPUT_PORT_TYPE
+out7[3] <= WideOr0.DB_MAX_OUTPUT_PORT_TYPE
+out7[4] <= Decoder0.DB_MAX_OUTPUT_PORT_TYPE
+out7[5] <= out7.DB_MAX_OUTPUT_PORT_TYPE
+out7[6] <= out7.DB_MAX_OUTPUT_PORT_TYPE
+
+
+|FPGA_EXP2_fhr|Decoder38:U14
+din[0] => Decoder0.IN2
+din[1] => Decoder0.IN1
+din[2] => Decoder0.IN0
+dout[0] <= Decoder0.DB_MAX_OUTPUT_PORT_TYPE
+dout[1] <= Decoder0.DB_MAX_OUTPUT_PORT_TYPE
+dout[2] <= Decoder0.DB_MAX_OUTPUT_PORT_TYPE
+dout[3] <= Decoder0.DB_MAX_OUTPUT_PORT_TYPE
+dout[4] <= Decoder0.DB_MAX_OUTPUT_PORT_TYPE
+dout[5] <= Decoder0.DB_MAX_OUTPUT_PORT_TYPE
+dout[6] <= Decoder0.DB_MAX_OUTPUT_PORT_TYPE
+dout[7] <= Decoder0.DB_MAX_OUTPUT_PORT_TYPE
+
+

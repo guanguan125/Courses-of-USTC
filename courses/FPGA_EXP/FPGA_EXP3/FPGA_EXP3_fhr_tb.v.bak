@@ -1,0 +1,11 @@
+`timescale 10ns/1ns
+module FPGA_EXP3_fhr_tb();
+	reg a,b;
+	wire c;
+	always begin
+		#0 b=1'b0;
+		
+		
+	end
+	FPGA_EXP3_fhr U1(a,b,c);
+endmodule

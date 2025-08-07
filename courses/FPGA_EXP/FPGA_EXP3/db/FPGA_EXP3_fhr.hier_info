@@ -1,0 +1,133 @@
+|FPGA_EXP3_fhr
+clk => clk.IN1
+rst_n => rst_n.IN4
+decide => decide.IN1
+out << FSM3:U5.port3
+D << D.DB_MAX_OUTPUT_PORT_TYPE
+st[0] << FSM3:U5.port4
+st[1] << FSM3:U5.port4
+st[2] << FSM3:U5.port4
+st[3] << FSM3:U5.port4
+
+
+|FPGA_EXP3_fhr|Div50MHz:U1
+clk => clkout~reg0.CLK
+clk => cnt[0].CLK
+clk => cnt[1].CLK
+clk => cnt[2].CLK
+clk => cnt[3].CLK
+clk => cnt[4].CLK
+clk => cnt[5].CLK
+clk => cnt[6].CLK
+clk => cnt[7].CLK
+clk => cnt[8].CLK
+clk => cnt[9].CLK
+clk => cnt[10].CLK
+clk => cnt[11].CLK
+clk => cnt[12].CLK
+clk => cnt[13].CLK
+clk => cnt[14].CLK
+clk => cnt[15].CLK
+clk => cnt[16].CLK
+clk => cnt[17].CLK
+clk => cnt[18].CLK
+clk => cnt[19].CLK
+clk => cnt[20].CLK
+clk => cnt[21].CLK
+clk => cnt[22].CLK
+clk => cnt[23].CLK
+clk => cnt[24].CLK
+clk => cnt[25].CLK
+clk => cnt[26].CLK
+clk => cnt[27].CLK
+clk => cnt[28].CLK
+clk => cnt[29].CLK
+clk => cnt[30].CLK
+clk => cnt[31].CLK
+clkout <= clkout~reg0.DB_MAX_OUTPUT_PORT_TYPE
+res => clkout~reg0.ACLR
+res => cnt[0].ACLR
+res => cnt[1].ACLR
+res => cnt[2].ACLR
+res => cnt[3].ACLR
+res => cnt[4].ACLR
+res => cnt[5].ACLR
+res => cnt[6].ACLR
+res => cnt[7].ACLR
+res => cnt[8].ACLR
+res => cnt[9].ACLR
+res => cnt[10].ACLR
+res => cnt[11].ACLR
+res => cnt[12].ACLR
+res => cnt[13].ACLR
+res => cnt[14].ACLR
+res => cnt[15].ACLR
+res => cnt[16].ACLR
+res => cnt[17].ACLR
+res => cnt[18].ACLR
+res => cnt[19].ACLR
+res => cnt[20].ACLR
+res => cnt[21].ACLR
+res => cnt[22].ACLR
+res => cnt[23].ACLR
+res => cnt[24].ACLR
+res => cnt[25].ACLR
+res => cnt[26].ACLR
+res => cnt[27].ACLR
+res => cnt[28].ACLR
+res => cnt[29].ACLR
+res => cnt[30].ACLR
+res => cnt[31].ACLR
+
+
+|FPGA_EXP3_fhr|FSM1:U2
+clk => st~1.DATAIN
+reset => st~3.DATAIN
+mealy <= always1.DB_MAX_OUTPUT_PORT_TYPE
+
+
+|FPGA_EXP3_fhr|FSM2:U3
+clk => st~1.DATAIN
+reset => st~3.DATAIN
+mealy <= mealy.DB_MAX_OUTPUT_PORT_TYPE
+
+
+|FPGA_EXP3_fhr|decide_1_from_2:U4
+dout1 => D.DATAB
+dout2 => D.DATAA
+D <= D.DB_MAX_OUTPUT_PORT_TYPE
+decide => D.OUTPUTSELECT
+
+
+|FPGA_EXP3_fhr|FSM3:U5
+clk => st[0]~reg0.CLK
+clk => st[1]~reg0.CLK
+clk => st[2]~reg0.CLK
+clk => st[3]~reg0.CLK
+reset => st[0]~reg0.ACLR
+reset => st[1]~reg0.ACLR
+reset => st[2]~reg0.ACLR
+reset => st[3]~reg0.ACLR
+D => Mux3.IN4
+D => Mux2.IN7
+D => Mux2.IN8
+D => Mux3.IN5
+D => Mux2.IN9
+D => Mux3.IN6
+D => Mux1.IN9
+D => Mux3.IN7
+D => Mux0.IN8
+D => Mux0.IN9
+D => Mux3.IN8
+D => Mux3.IN9
+D => Mux1.IN6
+D => Mux2.IN6
+D => Mux1.IN7
+D => Mux1.IN8
+mealy <= Equal0.DB_MAX_OUTPUT_PORT_TYPE
+st[0] <= st[0]~reg0.DB_MAX_OUTPUT_PORT_TYPE
+st[1] <= st[1]~reg0.DB_MAX_OUTPUT_PORT_TYPE
+st[2] <= st[2]~reg0.DB_MAX_OUTPUT_PORT_TYPE
+st[3] <= st[3]~reg0.DB_MAX_OUTPUT_PORT_TYPE
+
+

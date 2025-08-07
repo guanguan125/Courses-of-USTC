@@ -1,0 +1,149 @@
+------------------------------------------------------------
+TimeQuest Timing Analyzer Summary
+------------------------------------------------------------
+
+Type  : Slow 1100mV 85C Model Setup 'Reader:U4|tmp_code[4]'
+Slack : -3.767
+TNS   : -24.819
+
+Type  : Slow 1100mV 85C Model Setup 'clk'
+Slack : -3.748
+TNS   : -112.012
+
+Type  : Slow 1100mV 85C Model Setup 'Div50MHz:U1|clkout'
+Slack : -1.511
+TNS   : -5.390
+
+Type  : Slow 1100mV 85C Model Hold 'clk'
+Slack : -1.514
+TNS   : -1.514
+
+Type  : Slow 1100mV 85C Model Hold 'Div50MHz:U1|clkout'
+Slack : 0.561
+TNS   : 0.000
+
+Type  : Slow 1100mV 85C Model Hold 'Reader:U4|tmp_code[4]'
+Slack : 0.991
+TNS   : 0.000
+
+Type  : Slow 1100mV 85C Model Minimum Pulse Width 'clk'
+Slack : -0.724
+TNS   : -36.705
+
+Type  : Slow 1100mV 85C Model Minimum Pulse Width 'Div50MHz:U1|clkout'
+Slack : -0.724
+TNS   : -8.821
+
+Type  : Slow 1100mV 85C Model Minimum Pulse Width 'Reader:U4|tmp_code[4]'
+Slack : 0.334
+TNS   : 0.000
+
+Type  : Slow 1100mV 0C Model Setup 'clk'
+Slack : -4.052
+TNS   : -112.624
+
+Type  : Slow 1100mV 0C Model Setup 'Reader:U4|tmp_code[4]'
+Slack : -3.807
+TNS   : -24.789
+
+Type  : Slow 1100mV 0C Model Setup 'Div50MHz:U1|clkout'
+Slack : -1.559
+TNS   : -5.329
+
+Type  : Slow 1100mV 0C Model Hold 'clk'
+Slack : -1.577
+TNS   : -1.577
+
+Type  : Slow 1100mV 0C Model Hold 'Div50MHz:U1|clkout'
+Slack : 0.545
+TNS   : 0.000
+
+Type  : Slow 1100mV 0C Model Hold 'Reader:U4|tmp_code[4]'
+Slack : 0.784
+TNS   : 0.000
+
+Type  : Slow 1100mV 0C Model Minimum Pulse Width 'clk'
+Slack : -0.724
+TNS   : -36.643
+
+Type  : Slow 1100mV 0C Model Minimum Pulse Width 'Div50MHz:U1|clkout'
+Slack : -0.724
+TNS   : -8.859
+
+Type  : Slow 1100mV 0C Model Minimum Pulse Width 'Reader:U4|tmp_code[4]'
+Slack : 0.363
+TNS   : 0.000
+
+Type  : Fast 1100mV 85C Model Setup 'clk'
+Slack : -1.449
+TNS   : -29.535
+
+Type  : Fast 1100mV 85C Model Setup 'Reader:U4|tmp_code[4]'
+Slack : -1.348
+TNS   : -8.426
+
+Type  : Fast 1100mV 85C Model Setup 'Div50MHz:U1|clkout'
+Slack : -0.267
+TNS   : -0.708
+
+Type  : Fast 1100mV 85C Model Hold 'clk'
+Slack : -0.691
+TNS   : -0.691
+
+Type  : Fast 1100mV 85C Model Hold 'Div50MHz:U1|clkout'
+Slack : 0.157
+TNS   : 0.000
+
+Type  : Fast 1100mV 85C Model Hold 'Reader:U4|tmp_code[4]'
+Slack : 0.432
+TNS   : 0.000
+
+Type  : Fast 1100mV 85C Model Minimum Pulse Width 'clk'
+Slack : -0.461
+TNS   : -3.570
+
+Type  : Fast 1100mV 85C Model Minimum Pulse Width 'Div50MHz:U1|clkout'
+Slack : 0.125
+TNS   : 0.000
+
+Type  : Fast 1100mV 85C Model Minimum Pulse Width 'Reader:U4|tmp_code[4]'
+Slack : 0.426
+TNS   : 0.000
+
+Type  : Fast 1100mV 0C Model Setup 'clk'
+Slack : -1.326
+TNS   : -25.484
+
+Type  : Fast 1100mV 0C Model Setup 'Reader:U4|tmp_code[4]'
+Slack : -1.246
+TNS   : -7.735
+
+Type  : Fast 1100mV 0C Model Setup 'Div50MHz:U1|clkout'
+Slack : -0.225
+TNS   : -0.513
+
+Type  : Fast 1100mV 0C Model Hold 'clk'
+Slack : -0.739
+TNS   : -0.739
+
+Type  : Fast 1100mV 0C Model Hold 'Div50MHz:U1|clkout'
+Slack : 0.130
+TNS   : 0.000
+
+Type  : Fast 1100mV 0C Model Hold 'Reader:U4|tmp_code[4]'
+Slack : 0.383
+TNS   : 0.000
+
+Type  : Fast 1100mV 0C Model Minimum Pulse Width 'clk'
+Slack : -0.437
+TNS   : -3.526
+
+Type  : Fast 1100mV 0C Model Minimum Pulse Width 'Div50MHz:U1|clkout'
+Slack : 0.127
+TNS   : 0.000
+
+Type  : Fast 1100mV 0C Model Minimum Pulse Width 'Reader:U4|tmp_code[4]'
+Slack : 0.438
+TNS   : 0.000
+
+------------------------------------------------------------

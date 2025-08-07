@@ -1,0 +1,34 @@
+`timescale 10ns/1ns
+module FPGA_EXP2_tb();
+	reg [3:0]data4;
+	reg [2:0]cs;
+	reg en;
+	wire [7:0]csout;
+	wire [3:0]dout0,dout1,dout2,dout3,dout4,dout5,dout6,dout7;
+	always begin
+	
+	
+	#0 en=1;#0 data4=4'b0000;
+	#2 cs=3'b000;
+	#2 cs=3'b001;
+	#2 cs=3'b010;
+	#2 cs=3'b011;
+	#2 cs=3'b100;
+	#2 cs=3'b100;
+	#2 cs=3'b101;
+	#2 cs=3'b110;
+	#2 cs=3'b111;
+	#2 data4=4'b1111;
+	#2 cs=3'b000;
+	#2 cs=3'b001;
+	#2 cs=3'b010;
+	#2 cs=3'b011;
+	#2 cs=3'b100;
+	#2 cs=3'b100;
+	#2 cs=3'b101;
+	#2 cs=3'b110;
+	#2 cs=3'b111;
+	#2 ;
+	end
+	FPGA_EXP2_fhr U1(en,data4,cs,dout0,dout1,dout2,dout3,dout4,dout5,dout6,dout7);
+endmodule

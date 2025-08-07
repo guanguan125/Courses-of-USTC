@@ -1,0 +1,32 @@
+%% 自适应 （相关峰计算）
+function [searchflag,timestart,corrdata] = LTECorrFun(rxData,corrlen,rsdata)
+
+% 输出参数： 
+% rxmodify：同步后输出数据 
+% rimestart：时隙开始位置 
+% corrdata：同步码相关后数据 
+% 输入参数： 
+% rxData：经过信道后数据 
+% prb_num：UE的RB个数 
+% rbstart：UE占用的无线资源块的起始位置 
+% UL_subframe_num：上行子帧时隙号 
+% cellid：小区ID 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% student code %%%%%%%%%%%%%%%%%%%%%%%%%%
+timedata = ifft(rsdata,2048);
+pssdata = timedata(1,1:1024);
+some_threshold_value = 0.5;
+rxDataLen = length(rxData);%30720
+corrdata = zeros(1,corrlen);%29696
+
+% 遍历接收数据进行相关计算
+for i = 1 : rxDataLen - length(pssdata) + 1
+    corrdata(i) = sum((rxData(i:i+length(pssdata)-1) ./ conj(pssdata)));
+    %corrdata(i) = sum((rxData(i:i+length(pssdata)-1) .* conj(pssdata)));
+end
+[peakValue, peakIndex] = max(abs(corrdata));
+figure(110);
+plot(abs(corrdata));
+searchflag = (peakValue > some_threshold_value); % 根据实际情况设置阈值判断是否找到有效相关峰
+timestart = peakIndex;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% end %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+end

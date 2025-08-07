@@ -1,0 +1,26 @@
+
+State Machine - |FPGA_EXP3_fhr|FSM2:U3|st
+Name st.S9 st.S8 st.S7 st.S6 st.S5 st.S4 st.S3 st.S2 st.S1 st.S0 
+st.S0 0 0 0 0 0 0 0 0 0 0 
+st.S1 0 0 0 0 0 0 0 0 1 1 
+st.S2 0 0 0 0 0 0 0 1 0 1 
+st.S3 0 0 0 0 0 0 1 0 0 1 
+st.S4 0 0 0 0 0 1 0 0 0 1 
+st.S5 0 0 0 0 1 0 0 0 0 1 
+st.S6 0 0 0 1 0 0 0 0 0 1 
+st.S7 0 0 1 0 0 0 0 0 0 1 
+st.S8 0 1 0 0 0 0 0 0 0 1 
+st.S9 1 0 0 0 0 0 0 0 0 1 
+
+State Machine - |FPGA_EXP3_fhr|FSM1:U2|st
+Name st.S9 st.S8 st.S7 st.S6 st.S5 st.S4 st.S3 st.S2 st.S1 st.S0 
+st.S0 0 0 0 0 0 0 0 0 0 0 
+st.S1 0 0 0 0 0 0 0 0 1 1 
+st.S2 0 0 0 0 0 0 0 1 0 1 
+st.S3 0 0 0 0 0 0 1 0 0 1 
+st.S4 0 0 0 0 0 1 0 0 0 1 
+st.S5 0 0 0 0 1 0 0 0 0 1 
+st.S6 0 0 0 1 0 0 0 0 0 1 
+st.S7 0 0 1 0 0 0 0 0 0 1 
+st.S8 0 1 0 0 0 0 0 0 0 1 
+st.S9 1 0 0 0 0 0 0 0 0 1 

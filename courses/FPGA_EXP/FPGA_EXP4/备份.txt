@@ -1,0 +1,37 @@
+
+module FPGA_EXP4(SW_R,clk,res,SW_C,out7,out1,counter0to3,code);//
+	input clk,res;//
+	input [3:0]SW_R;
+	output [6:0]out7;
+	output [3:0]SW_C;
+	output out1;
+	//wire clkout;
+	output [1:0]counter0to3;
+	output [4:0]code;
+	//wire [1:0]counter0to3;
+	//wire [4:0]code;
+	//Div50MHz U1(clk,clkout,res);
+	Counter0to3 U1(clk,counter0to3,res);//q为0-3的计数out
+	CodeScanner U3(counter0to3,SW_C);
+	Reader U4(SW_R,code,counter0to3);
+	Decoder47 U5(code,out7,res,out1);
+endmodule
+
+
+
+			5'b10000:out7<=7'b0000001;
+			5'b10001:out7<=7'b1001111;
+			5'b10010:out7<=7'b0010010;
+			5'b10011:out7<=7'b0000110;
+			5'b10100:out7<=7'b1001100;//4
+			5'b10101:out7<=7'b0100100;
+			5'b10110:out7<=7'b0100000;
+			5'b10111:out7<=7'b0001111;//7
+			5'b11000:out7<=7'b0000000;//8
+			5'b11001:out7<=7'b0000100;//9
+			5'b11010:out7<=7'b0001000;//10A
+			5'b11011:out7<=7'b1100000;//11B
+			5'b11100:out7<=7'b0110001;//12C
+			5'b11101:out7<=7'b1000010;//13D
+			5'b11110:out7<=7'b0110000;//14E
+			5'b11111:out7<=7'b0111000;//15F

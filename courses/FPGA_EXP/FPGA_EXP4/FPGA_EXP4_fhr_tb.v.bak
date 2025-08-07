@@ -1,0 +1,4 @@
+`timescale 10ns/1ns
+module FPGA_EXP4_tb(SW_R,clk,res,SW_C,out7,out1);
+ reg clk,res;
+ wire ;

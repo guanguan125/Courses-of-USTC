@@ -1,0 +1,4 @@
+`timescale 10ns/1ns
+module FPGA_EXP5_tb()；
+	reg res,clk;
+	wire 

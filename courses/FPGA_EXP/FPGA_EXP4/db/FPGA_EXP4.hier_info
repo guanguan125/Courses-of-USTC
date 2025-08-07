@@ -1,0 +1,116 @@
+|FPGA_EXP4
+SW_R[0] => SW_R[0].IN1
+SW_R[1] => SW_R[1].IN1
+SW_R[2] => SW_R[2].IN1
+SW_R[3] => SW_R[3].IN1
+clk => clk.IN2
+res => res.IN2
+SW_C[0] <= CodeScanner:U3.port1
+SW_C[1] <= CodeScanner:U3.port1
+SW_C[2] <= CodeScanner:U3.port1
+SW_C[3] <= CodeScanner:U3.port1
+out7[0] <= Decoder47:U5.port1
+out7[1] <= Decoder47:U5.port1
+out7[2] <= Decoder47:U5.port1
+out7[3] <= Decoder47:U5.port1
+out7[4] <= Decoder47:U5.port1
+out7[5] <= Decoder47:U5.port1
+out7[6] <= Decoder47:U5.port1
+out1 <= Decoder47:U5.port3
+
+
+|FPGA_EXP4|Counter0to3:U2
+clk => tmp_q[0].CLK
+clk => tmp_q[1].CLK
+counter0to3[0] <= tmp_q[0].DB_MAX_OUTPUT_PORT_TYPE
+counter0to3[1] <= tmp_q[1].DB_MAX_OUTPUT_PORT_TYPE
+res => tmp_q[0].ACLR
+res => tmp_q[1].ACLR
+
+
+|FPGA_EXP4|CodeScanner:U3
+counter0to3[0] => Decoder0.IN1
+counter0to3[1] => Decoder0.IN0
+out[0] <= Decoder0.DB_MAX_OUTPUT_PORT_TYPE
+out[1] <= Decoder0.DB_MAX_OUTPUT_PORT_TYPE
+out[2] <= Decoder0.DB_MAX_OUTPUT_PORT_TYPE
+out[3] <= Decoder0.DB_MAX_OUTPUT_PORT_TYPE
+
+
+|FPGA_EXP4|Reader:U4
+SW_R[0] => Decoder0.IN3
+SW_R[1] => Decoder0.IN2
+SW_R[2] => Decoder0.IN1
+SW_R[3] => Decoder0.IN0
+code[0] <= tmp_code[0].DB_MAX_OUTPUT_PORT_TYPE
+code[1] <= tmp_code[1].DB_MAX_OUTPUT_PORT_TYPE
+code[2] <= tmp_code[2].DB_MAX_OUTPUT_PORT_TYPE
+code[3] <= tmp_code[3].DB_MAX_OUTPUT_PORT_TYPE
+code[4] <= tmp_code[4].DB_MAX_OUTPUT_PORT_TYPE
+counter0to3[0] => Equal0.IN1
+counter0to3[0] => Equal1.IN0
+counter0to3[0] => Equal2.IN1
+counter0to3[0] => Equal3.IN1
+counter0to3[1] => Equal0.IN0
+counter0to3[1] => Equal1.IN1
+counter0to3[1] => Equal2.IN0
+counter0to3[1] => Equal3.IN0
+clk => tmp_code[0].CLK
+clk => tmp_code[1].CLK
+clk => tmp_code[2].CLK
+clk => tmp_code[3].CLK
+clk => tmp_code[4].CLK
+
+
+|FPGA_EXP4|Decoder47:U5
+code[0] => Mux0.IN36
+code[0] => Mux1.IN36
+code[0] => Mux2.IN36
+code[0] => Mux3.IN36
+code[0] => Mux4.IN36
+code[0] => Mux5.IN36
+code[0] => Mux6.IN36
+code[0] => Mux7.IN36
+code[1] => Mux0.IN35
+code[1] => Mux1.IN35
+code[1] => Mux2.IN35
+code[1] => Mux3.IN35
+code[1] => Mux4.IN35
+code[1] => Mux5.IN35
+code[1] => Mux6.IN35
+code[1] => Mux7.IN35
+code[2] => Mux0.IN34
+code[2] => Mux1.IN34
+code[2] => Mux2.IN34
+code[2] => Mux3.IN34
+code[2] => Mux4.IN34
+code[2] => Mux5.IN34
+code[2] => Mux6.IN34
+code[2] => Mux7.IN34
+code[3] => Mux0.IN33
+code[3] => Mux1.IN33
+code[3] => Mux2.IN33
+code[3] => Mux3.IN33
+code[3] => Mux4.IN33
+code[3] => Mux5.IN33
+code[3] => Mux6.IN33
+code[3] => Mux7.IN33
+code[4] => Mux0.IN32
+code[4] => Mux1.IN32
+code[4] => Mux2.IN32
+code[4] => Mux3.IN32
+code[4] => Mux4.IN32
+code[4] => Mux5.IN32
+code[4] => Mux6.IN32
+code[4] => Mux7.IN32
+out7[0] <= out7[0]$latch.DB_MAX_OUTPUT_PORT_TYPE
+out7[1] <= out7[1]$latch.DB_MAX_OUTPUT_PORT_TYPE
+out7[2] <= out7[2]$latch.DB_MAX_OUTPUT_PORT_TYPE
+out7[3] <= out7[3]$latch.DB_MAX_OUTPUT_PORT_TYPE
+out7[4] <= out7[4]$latch.DB_MAX_OUTPUT_PORT_TYPE
+out7[5] <= out7[5]$latch.DB_MAX_OUTPUT_PORT_TYPE
+out7[6] <= out7[6]$latch.DB_MAX_OUTPUT_PORT_TYPE
+res => out1.DATAIN
+out1 <= res.DB_MAX_OUTPUT_PORT_TYPE
+
+
