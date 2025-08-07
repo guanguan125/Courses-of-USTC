@@ -1,0 +1,6 @@
+实验指导书_2024.docx
+Matlab用于DSP入门指南_2024.docx
+ref_C_code.rar，MFCC绘图程序示例（VC6/VS2017）
+Numerical Recipes in C.rar（C算法书籍）
+ref_python_for_dsp.pdf（Python用于DSP简要入门）
+

@@ -1,0 +1,6 @@
+Why the discrete histogram
+equalization technique does
+not yield a flat histogram?
+4.2.3 Histogram processing : Histogram equalization
+question: page 99, 4.2
+4.2 Contrast Enhancement
